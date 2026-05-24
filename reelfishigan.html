@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReelFishigan - 3D Printed Fishing Gear</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Barlow', sans-serif; background: #EDE9E0; }
+        
+        :root {
+            --navy: #061827;
+            --navy-mid: #0D2E47;
+            --gold: #C9933A;
+            --gold-lt: #E8B45C;
+            --teal: #1AAFA0;
+            --white: #F4F1EC;
+            --cream: #EDE9E0;
+            --txt: #1A1A2E;
+            --muted: #7A8A96;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(6, 24, 39, 0.98);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--navy-mid);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon { font-size: 24px; }
+        .logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--gold); }
+        .logo-sub { font-family: 'Barlow', sans-serif; font-size: 8px; color: var(--teal); }
+
+        nav {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.75);
+            font-family: 'Barlow', sans-serif;
+            font-weight: 600;
+            font-size: 11px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        nav button:hover { 
+            background: rgba(201, 147, 58, 0.15);
+            color: var(--gold); 
+        }
+
+        nav button.active { 
+            background: rgba(201, 147, 58, 0.22); 
+            color: var(--gold); 
+        }
+
+        .cart-btn {
+            background: var(--gold);
+            color: var(--navy);
+            font-weight: 700;
+        }
+
+        .hero {
+            background: linear-gradient(160deg, var(--navy) 0%, var(--navy-mid) 60%, #0A3040 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 24px 80px 24px;
+        }
+
+        .hero h1:first-of-type { font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: var(--gold); margin: 0 0 8px 0; }
+        .hero h1:last-of-type { font-family: 'Bebas Neue', sans-serif; font-size: 72px; color: var(--white); margin: 0 0 24px 0; }
+        .hero p { font-size: 16px; color: rgba(255,255,255,0.8); line-height: 1.8; margin: 24px 0 32px 0; }
+
+        .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+        .btn {
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-weight: 700;
+            padding: 14px 28px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, var(--gold), var(--gold-lt)); color: var(--navy); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,147,58,0.3); }
+
+        .btn-secondary { background: transparent; border: 2px solid var(--white); color: var(--white); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+        .section { padding: 80px 24px; }
+        .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 48px; margin-bottom: 48px; }
+
+        .products-section { background: var(--cream); }
+        .products-section .section-title { color: var(--txt); }
+
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+
+        .product-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+            border: 1px solid #e8e4dc;
+            transition: all 0.3s;
+        }
+
+        .product-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(0,0,0,0.16); }
+
+        .product-visual { width: 100%; height: 200px; background: linear-gradient(135deg, #174B8A, #2060B8); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+
+        .product-info { padding: 16px 20px 20px; }
+        .product-category { font-size: 11px; color: var(--teal); letter-spacing: 1px; text-transform: uppercase; }
+        .product-name { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--txt); margin: 8px 0; }
+        .product-desc { font-size: 13px; color: var(--muted); margin: 8px 0 12px 0; }
+        .product-bottom { display: flex; justify-content: space-between; align-items: center; }
+        .product-price { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--navy); font-weight: 700; }
+        .product-colors { background: rgba(201,147,58,0.11); border: 1px solid rgba(201,147,58,0.27); color: var(--gold); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+
+        .why-section { background: var(--navy); }
+        .why-section .section-title { color: var(--white); }
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+        .feature-box {
+            background: rgba(13, 46, 71, 0.8);
+            border: 1px solid var(--navy-mid);
+            border-radius: 16px;
+            padding: 32px;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-box-icon { font-size: 40px; margin-bottom: 14px; }
+        .feature-box-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--white); margin: 8px 0; }
+        .feature-box-desc { color: rgba(255,255,255,0.65); font-size: 14px; line-height: 1.6; }
+
+        footer { background: #040E18; padding: 32px 24px; text-align: center; }
+        .footer-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--gold); }
+        .footer-sub { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 8px; }
+
+        .page-wrapper { min-height: 100vh; }
+        .page-header { background: var(--navy); padding: 48px 24px; color: var(--white); }
+        .page-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 48px; margin: 0; }
+        .page-header p { color: rgba(255,255,255,0.6); margin: 8px 0 0 0; }
+
+        .hidden { display: none !important; }
+
+        /* Detail Page */
+        .detail-content { max-width: 1200px; margin: 0 auto; padding: 48px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+        .detail-image { width: 100%; height: 340px; background: linear-gradient(135deg, #174B8A, #2060B8); border-radius: 20px; }
+        .detail-name { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: var(--txt); margin: 20px 0; }
+        .detail-price { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--gold); font-weight: 700; margin-bottom: 20px; }
+        .detail-desc { font-size: 15px; color: #555; line-height: 1.8; margin-bottom: 32px; }
+        .color-selector { margin-bottom: 24px; }
+        .color-selector label { display: block; font-weight: 700; font-size: 13px; margin-bottom: 10px; }
+        .color-options { display: flex; gap: 10px; flex-wrap: wrap; }
+        .color-btn { padding: 8px 14px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: #fff; color: var(--txt); font-size: 12px; }
+        .color-btn.selected { border: 2px solid var(--gold); background: var(--navy); color: #fff; }
+        .qty-selector { margin-bottom: 24px; }
+        .qty-selector label { display: block; font-weight: 700; font-size: 13px; margin-bottom: 10px; }
+        .add-to-cart { width: 100%; background: linear-gradient(135deg, var(--gold), var(--gold-lt)); border: none; color: var(--navy); font-family: 'Bebas Neue', sans-serif; font-size: 18px; padding: 16px; border-radius: 8px; cursor: pointer; font-weight: 700; margin-bottom: 16px; }
+        .specs { background: #fff; border: 1px solid #e8e4dc; border-radius: 12px; padding: 20px; margin-top: 32px; }
+        .specs h4 { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--txt); margin: 0 0 12px 0; }
+        .spec-item { display: flex; gap: 10px; margin-bottom: 10px; }
+
+        /* Cart Page */
+        .cart-grid { display: grid; grid-template-columns: 1fr 350px; gap: 40px; }
+        .cart-items { display: flex; flex-direction: column; gap: 16px; }
+        .cart-item { background: #fff; border: 1px solid #e8e4dc; border-radius: 12px; padding: 20px; display: grid; grid-template-columns: 120px 1fr auto; gap: 20px; align-items: start; }
+        .cart-item-image { width: 120px; height: 120px; background: linear-gradient(135deg, #174B8A, #2060B8); border-radius: 8px; }
+        .cart-item-name { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--txt); margin: 0 0 4px 0; }
+        .cart-item-color { font-size: 13px; color: var(--muted); margin: 8px 0; }
+        .qty-control { display: flex; align-items: center; gap: 8px; }
+        .qty-control button { background: transparent; border: none; cursor: pointer; padding: 6px 10px; }
+        .qty-value { width: 30px; text-align: center; font-weight: 600; }
+        .cart-item-price { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--navy); font-weight: 700; margin-bottom: 12px; }
+        .remove-btn { background: none; border: none; color: #999; cursor: pointer; font-size: 13px; text-decoration: underline; }
+        .order-summary { height: fit-content; position: sticky; top: 100px; background: #fff; border: 1px solid #e8e4dc; border-radius: 12px; padding: 24px; }
+        .summary-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--txt); margin: 0 0 16px 0; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
+        .summary-divider { border-bottom: 1px solid #e8e4dc; padding-bottom: 16px; margin-bottom: 16px; }
+        .summary-total { display: flex; justify-content: space-between; margin-bottom: 24px; font-size: 18px; font-family: 'Bebas Neue', sans-serif; font-weight: 700; }
+        .summary-total .amount { color: var(--gold); }
+
+        /* Checkout */
+        .checkout-grid { display: grid; grid-template-columns: 1fr 350px; gap: 40px; }
+        .checkout-form { background: #fff; border: 1px solid #e8e4dc; border-radius: 12px; padding: 32px; margin-bottom: 24px; }
+        .form-section { margin-bottom: 24px; }
+        .form-section h2 { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--txt); margin: 0 0 24px 0; }
+        .form-field { margin-bottom: 16px; }
+        .form-field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--txt); }
+        .form-field input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: 'Barlow', sans-serif; font-size: 14px; }
+        .form-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; }
+        .form-field input:focus { outline: none; border-color: var(--gold); }
+
+        .empty-cart { text-align: center; padding: 60px 20px; }
+        .empty-cart-icon { font-size: 48px; margin-bottom: 16px; }
+        .empty-cart h2 { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--txt); margin: 0 0 16px 0; }
+        .empty-cart p { color: var(--muted); margin-bottom: 32px; }
+
+        .confirmation-page { display: flex; align-items: center; justify-content: center; }
+        .confirmation-content { text-align: center; padding: 40px; }
+        .confirmation-icon { font-size: 64px; margin-bottom: 24px; }
+        .confirmation-title { font-family: 'Bebas Neue', sans-serif; font-size: 48px; color: var(--teal); margin: 0 0 16px 0; }
+        .confirmation-text { color: var(--muted); font-size: 16px; margin-bottom: 32px; }
+
+        @media (max-width: 768px) {
+            header { padding: 10px 12px; }
+            .logo-text { font-size: 14px; }
+            .logo-icon { font-size: 20px; }
+            nav button { padding: 5px 10px; font-size: 10px; }
+            .hero { grid-template-columns: 1fr; padding: 40px 16px 60px; }
+            .hero h1:first-of-type { font-size: 48px; }
+            .hero h1:last-of-type { font-size: 48px; }
+            .detail-content { grid-template-columns: 1fr; gap: 32px; }
+            .cart-grid { grid-template-columns: 1fr; }
+            .order-summary { position: static; }
+            .checkout-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="logo-btn" onclick="showPage('home')">
+            <div class="logo-icon">🎣</div>
+            <div>
+                <div class="logo-text">REELFISHIGAN</div>
+                <div class="logo-sub">3D PRINTED GEAR</div>
+            </div>
+        </button>
+        <nav>
+            <button class="nav-btn" data-page="home" onclick="showPage('home')">Home</button>
+            <button class="nav-btn" data-page="products" onclick="showPage('products')">Products</button>
+            <button class="nav-btn" data-page="community" onclick="showPage('community')">Community</button>
+            <button class="cart-btn" onclick="showPage('cart')">🛒 (<span id="cart-count">0</span>)</button>
+        </nav>
+    </header>
+
+    <main id="app-container">
+        <!-- HOME PAGE -->
+        <div id="home-page" class="page-wrapper">
+            <section class="hero">
+                <div>
+                    <h1>REEL</h1>
+                    <h1>FISHIGAN</h1>
+                    <p>Premium 3D printed fish finder sun shades for Michigan waters. Free shipping, custom colors, built to last.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="showPage('products')">Shop Now →</button>
+                        <button class="btn btn-secondary" onclick="showPage('community')">Community Catches</button>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px; max-width: 600px;">
+                    <div style="display: flex; align-items: center; gap: 12px; background: rgba(26,175,160,0.22); border: 1px solid rgba(26,175,160,0.44); border-radius: 8px; padding: 12px 16px;">
+                        <span style="font-size: 20px;">🎯</span>
+                        <span style="color: var(--teal); font-weight: 600; font-size: 12px; text-transform: uppercase;">Engineered for Fishing</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 24px;">🖨️</span>
+                        <span style="color: rgba(255,255,255,0.9); font-weight: 600; font-size: 14px;">3D Printed</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 24px;">💧</span>
+                        <span style="color: rgba(255,255,255,0.9); font-weight: 600; font-size: 14px;">Lake Tested</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; background: rgba(26,175,160,0.22); border: 1px solid rgba(26,175,160,0.44); border-radius: 8px; padding: 12px 16px;">
+                        <span style="font-size: 20px;">👨‍⚓</span>
+                        <span style="color: var(--teal); font-weight: 600; font-size: 12px; text-transform: uppercase;">Fisherman Approved</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section products-section">
+                <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+                    <h2 class="section-title">Featured Products</h2>
+                    <div class="products-grid" id="featured-products"></div>
+                </div>
+            </section>
+
+            <section class="section why-section">
+                <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+                    <h2 class="section-title">Why Choose Us</h2>
+                    <div class="features">
+                        <div class="feature-box">
+                            <div class="feature-box-icon">🎯</div>
+                            <h3 class="feature-box-title">Designed by Anglers</h3>
+                            <p class="feature-box-desc">Built around real problems from Michigan lakes.</p>
+                        </div>
+                        <div class="feature-box">
+                            <div class="feature-box-icon">☀️</div>
+                            <h3 class="feature-box-title">UV-Resistant</h3>
+                            <p class="feature-box-desc">Handles August sun through icy mornings.</p>
+                        </div>
+                        <div class="feature-box">
+                            <div class="feature-box-icon">🎨</div>
+                            <h3 class="feature-box-title">4 Color Options</h3>
+                            <p class="feature-box-desc">Black, White, Grey, Yellow.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer>
+                <div class="footer-title">REELFISHIGAN</div>
+                <div class="footer-sub">Premium 3D Printed Fishing Gear</div>
+            </footer>
+        </div>
+
+        <!-- PRODUCTS PAGE -->
+        <div id="products-page" class="page-wrapper hidden" style="background: var(--cream);">
+            <div class="page-header">
+                <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+                    <h1>All Products</h1>
+                    <p>3 items available</p>
+                </div>
+            </div>
+            <div style="max-width: 1200px; margin: 0 auto; padding: 40px 24px;">
+                <div class="products-grid" id="all-products"></div>
+            </div>
+            <footer>
+                <div class="footer-title">REELFISHIGAN</div>
+                <div class="footer-sub">Premium 3D Printed Fishing Gear</div>
+            </footer>
+        </div>
+
+        <!-- PRODUCT DETAIL PAGE -->
+        <div id="detail-page" class="page-wrapper hidden" style="background: var(--cream);">
+            <div class="page-header">
+                <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+                    <h1 id="detail-title">Product</h1>
+                </div>
+            </div>
+            <div class="detail-content">
+                <div id="detail-image" class="detail-image"></div>
+                <div>
+                    <h1 class="detail-name" id="detail-name">Product Name</h1>
+                    <div class="detail-price" id="detail-price">$0.00</div>
+                    <p class="detail-desc" id="detail-desc">Description</p>
+                    <div class="color-selector">
+                        <label>Color: <span id="selected-color" style="color: var(--gold);">Black</span></label>
+                        <div class="color-options" id="color-options"></div>
+                    </div>
+                    <div class="qty-selector">
+                        <label>Quantity</label>
+                        <div style="display: flex; align-items: center; gap: 8px; width: fit-content;">
+                            <button onclick="updateDetailQty(-1)" style="background: transparent; border: none; padding: 6px 10px; cursor: pointer; font-size: 16px;">−</button>
+                            <span id="detail-qty" style="width: 30px; text-align: center; font-weight: 600;">1</span>
+                            <button onclick="updateDetailQty(1)" style="background: transparent; border: none; padding: 6px 10px; cursor: pointer; font-size: 16px;">+</button>
+                        </div>
+                    </div>
+                    <button class="add-to-cart" onclick="addToCartFromDetail()">Add to Cart — <span id="detail-total">$0.00</span></button>
+                    <div class="specs">
+                        <h4>Specs</h4>
+                        <div id="detail-specs"></div>
+                    </div>
+                </div>
+            </div>
+            <footer>
+                <div class="footer-title">REELFISHIGAN</div>
+                <div class="footer-sub">Premium 3D Printed Fishing Gear</div>
+            </footer>
+        </div>
+
+        <!-- COMMUNITY PAGE -->
+        <div id="community-page" class="page-wrapper hidden" style="background: var(--cream);">
+            <div class="page-header">
+                <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+                    <h1>Community Catches</h1>
+                    <p>Real anglers. Real results.</p>
+                </div>
+            </div>
+            <div style="max-width: 1200px; margin: 0 auto; padding: 40px 24px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px;">
+                    <div style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, var(--navy-mid), var(--navy)); display: flex; align-items: center; justify-content: center; font-size: 48px;">🎣</div>
+                        <div style="padding: 16px;">
+                            <div style="font-weight: 700; color: var(--txt); margin-bottom: 8px;">Mike D.</div>
+                            <p style="font-size: 13px; color: #555; margin: 0 0 10px 0;">First walleye of the season!</p>
+                        </div>
+                    </div>
+                    <div style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, var(--navy-mid), var(--navy)); display: flex; align-items: center; justify-content: center; font-size: 48px;">🎣</div>
+                        <div style="padding: 16px;">
+                            <div style="font-weight: 700; color: var(--txt); margin-bottom: 8px;">Sarah K.</div>
+                            <p style="font-size: 13px; color: #555; margin: 0 0 10px 0;">Shade fits like a glove.</p>
+                        </div>
+                    </div>
+                    <div style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, var(--navy-mid), var(--navy)); display: flex; align-items: center; justify-content: center; font-size: 48px;">🎣</div>
+                        <div style="padding: 16px;">
+                            <div style="font-weight: 700; color: var(--txt); margin-bottom: 8px;">Tom R.</div>
+                            <p style="font-size: 13px; color: #555; margin: 0 0 10px 0;">The Striker 4 Plus shade is legit.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer>
+                <div class="footer-title">REELFISHIGAN</div>
+                <div class="footer-sub">Premium 3D Printed Fishing Gear</div>
+            </footer>
+        </div>
+
+        <!-- CART PAGE -->
+        <div id="cart-page" class="page-wrapper hidden" style="background: var(--cream);">
+            <div class="page-header">
+                <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;"><h1>Shopping Cart</h1></div>
+            </div>
+            <div style="max-width: 1200px; margin: 0 auto; padding: 40px 24px;">
+                <div id="cart-content">
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <h2>Your cart is empty</h2>
+                        <p>Add some premium fish finder shades to get started.</p>
+                        <button class="btn btn-primary" onclick="showPage('products')">Continue Shopping</button>
+                    </div>
+                </div>
+            </div>
+            <footer>
+                <div class="footer-title">REELFISHIGAN</div>
+                <div class="footer-sub">Premium 3D Printed Fishing Gear</div>
+            </footer>
+        </div>
+
+        <!-- CHECKOUT PAGE -->
+        <div id="checkout-page" class="page-wrapper hidden" style="background: var(--cream);">
+            <div class="page-header">
+                <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;"><h1>Checkout</h1></div>
+            </div>
+            <div style="max-width: 1200px; margin: 0 auto; padding: 40px 24px;">
+                <form onsubmit="submitCheckout(event)" class="checkout-grid">
+                    <div>
+                        <div class="checkout-form">
+                            <div class="form-section">
+                                <h2>Shipping Address</h2>
+                                <div class="form-field">
+                                    <label>Full Name</label>
+                                    <input type="text" id="name" required>
+                                </div>
+                                <div class="form-field">
+                                    <label>Email</label>
+                                    <input type="email" id="email" required>
+                                </div>
+                                <div class="form-field">
+                                    <label>Address</label>
+                                    <input type="text" id="address" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-field">
+                                        <label>City</label>
+                                        <input type="text" id="city" required>
+                                    </div>
+                                    <div class="form-field">
+                                        <label>State</label>
+                                        <input type="text" id="state" placeholder="MI" required>
+                                    </div>
+                                    <div class="form-field">
+                                        <label>ZIP</label>
+                                        <input type="text" id="zip" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="checkout-form">
+                            <div class="form-section">
+                                <h2>Payment Method</h2>
+                                <div class="form-field">
+                                    <label>Card Details</label>
+                                    <div id="card-element" style="border: 1px solid #ddd; border-radius: 6px; padding: 12px; font-family: 'Barlow', sans-serif;"></div>
+                                    <div id="card-errors" style="color: #dc3545; font-size: 13px; margin-top: 8px;"></div>
+                                </div>
+                                <p style="font-size: 12px; color: var(--muted); margin: 12px 0 0 0;">🔒 Test card: 4242 4242 4242 4242 · Any future date · Any 3 digits</p>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Pay <span id="checkout-total">$0.00</span></button>
+                    </div>
+
+                    <div class="order-summary">
+                        <h3 class="summary-title">Order Review</h3>
+                        <div id="checkout-summary"></div>
+                    </div>
+                </form>
+            </div>
+            <footer>
+                <div class="footer-title">REELFISHIGAN</div>
+                <div class="footer-sub">Premium 3D Printed Fishing Gear</div>
+            </footer>
+        </div>
+
+        <!-- CONFIRMATION PAGE -->
+        <div id="confirmation-page" class="page-wrapper hidden confirmation-page" style="background: var(--cream);">
+            <div class="confirmation-content">
+                <div class="confirmation-icon">✓</div>
+                <h1 class="confirmation-title">Order Confirmed!</h1>
+                <p class="confirmation-text">Thank you for your purchase. Check your email for order details and tracking info.</p>
+                <button class="btn btn-primary" onclick="showPage('home')">Continue Shopping</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let stripe = null;
+        let cardElement = null;
+
+        // Initialize Stripe
+        function initStripe() {
+            if (!stripe) {
+                stripe = Stripe('pk_live_51P1fe6LhsSUmVAB0BFFn2RNqS8JDtD85195s7DullbZ50gW48quqzwYMnvGCxRPv8p9uI');
+                const elements = stripe.elements();
+                cardElement = elements.create('card');
+                cardElement.mount('#card-element');
+                cardElement.addEventListener('change', function(event) {
+                    const displayError = document.getElementById('card-errors');
+                    if (event.error) {
+                        displayError.textContent = event.error.message;
+                    } else {
+                        displayError.textContent = '';
+                    }
+                });
+            }
+        }
+        const products = [
+            {
+                id: 1,
+                name: "Garmin Striker 4",
+                price: 19.99,
+                colors: ["Black", "White", "Grey", "Yellow"],
+                description: "Precision-fit 3D printed sun shade for Garmin Striker 4.",
+                specs: ["Fits Garmin Striker 4", "Tool-free friction fit", "UV-resistant material", "Free shipping on orders over $60"]
+            },
+            {
+                id: 2,
+                name: "Garmin Striker 4 Plus",
+                price: 21.99,
+                colors: ["Black", "White", "Grey", "Yellow"],
+                description: "Scaled up for the Striker 4 Plus.",
+                specs: ["Fits Garmin Striker 4 Plus", "Tool-free friction fit", "UV-resistant material", "Free shipping on orders over $60"]
+            },
+            {
+                id: 3,
+                name: "Garmin Echomap 93SV",
+                price: 24.99,
+                colors: ["Black", "White", "Grey", "Yellow"],
+                description: "Purpose-built sun shade for the Echomap 93SV.",
+                specs: ["Fits Garmin Echomap 93SV", "Tool-free friction fit", "UV-resistant material", "Free shipping on orders over $60"]
+            }
+        ];
+
+        let cart = [];
+        let currentProduct = null;
+        let detailColor = "Black";
+        let detailQty = 1;
+
+        function showPage(page) {
+            document.querySelectorAll('.page-wrapper').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(page + '-page').classList.remove('hidden');
+            document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+            window.scrollTo(0, 0);
+
+            if (page === 'products') renderProducts();
+            if (page === 'cart') renderCart();
+            if (page === 'checkout') renderCheckout();
+        }
+
+        function renderProducts() {
+            const html = products.map(p => `
+                <div class="product-card" onclick="showDetail(${p.id})">
+                    <div class="product-visual"></div>
+                    <div class="product-info">
+                        <div class="product-category">Fish Finder Covers</div>
+                        <h3 class="product-name">${p.name}</h3>
+                        <p class="product-desc">Anti-glare sun shade</p>
+                        <div class="product-bottom">
+                            <span class="product-price">$${p.price.toFixed(2)}</span>
+                            <span class="product-colors">4 Colors</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('all-products').innerHTML = html;
+            document.getElementById('featured-products').innerHTML = html;
+        }
+
+        function showDetail(id) {
+            currentProduct = products.find(p => p.id === id);
+            detailColor = "Black";
+            detailQty = 1;
+
+            document.getElementById('detail-title').textContent = currentProduct.name;
+            document.getElementById('detail-name').textContent = currentProduct.name;
+            document.getElementById('detail-price').textContent = `$${currentProduct.price.toFixed(2)}`;
+            document.getElementById('detail-desc').textContent = currentProduct.description;
+            document.getElementById('selected-color').textContent = detailColor;
+            document.getElementById('detail-qty').textContent = '1';
+
+            const colorOptionsHtml = currentProduct.colors.map(c => `
+                <button type="button" class="color-btn ${c === detailColor ? 'selected' : ''}" onclick="selectDetailColor('${c}')">${c}</button>
+            `).join('');
+            document.getElementById('color-options').innerHTML = colorOptionsHtml;
+
+            const specsHtml = currentProduct.specs.map(s => `
+                <div class="spec-item">
+                    <span style="color: var(--teal); flex-shrink: 0;">✓</span>
+                    <span style="font-size: 13px; color: #555;">${s}</span>
+                </div>
+            `).join('');
+            document.getElementById('detail-specs').innerHTML = specsHtml;
+
+            updateDetailTotal();
+            showPage('detail');
+        }
+
+        function selectDetailColor(color) {
+            detailColor = color;
+            document.getElementById('selected-color').textContent = color;
+            document.querySelectorAll('.color-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+
+        function updateDetailQty(change) {
+            detailQty = Math.max(1, detailQty + change);
+            document.getElementById('detail-qty').textContent = detailQty;
+            updateDetailTotal();
+        }
+
+        function updateDetailTotal() {
+            const total = currentProduct.price * detailQty;
+            document.getElementById('detail-total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function addToCartFromDetail() {
+            const key = `${currentProduct.id}-${detailColor}`;
+            const existing = cart.find(item => item.key === key);
+
+            if (existing) {
+                existing.qty += detailQty;
+            } else {
+                cart.push({
+                    key: key,
+                    id: currentProduct.id,
+                    color: detailColor,
+                    qty: detailQty,
+                    name: currentProduct.name,
+                    price: currentProduct.price
+                });
+            }
+
+            updateCartCount();
+            alert(`Added ${detailQty} to cart!`);
+            showPage('cart');
+        }
+
+        function updateCartCount() {
+            document.getElementById('cart-count').textContent = cart.length;
+        }
+
+        function renderCart() {
+            if (cart.length === 0) {
+                document.getElementById('cart-content').innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <h2>Your cart is empty</h2>
+                        <p>Add some premium fish finder shades to get started.</p>
+                        <button class="btn btn-primary" onclick="showPage('products')">Continue Shopping</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const shipping = subtotal >= 60 ? 0 : 9.99;
+            const total = subtotal + shipping;
+
+            const cartItemsHtml = cart.map((item, idx) => `
+                <div class="cart-item">
+                    <div class="cart-item-image"></div>
+                    <div>
+                        <h3 class="cart-item-name">${item.name}</h3>
+                        <p class="cart-item-color">Color: <span style="color: var(--gold);">${item.color}</span></p>
+                        <div class="qty-control">
+                            <button type="button" onclick="updateCartQty(${idx}, -1)">−</button>
+                            <span class="qty-value">${item.qty}</span>
+                            <button type="button" onclick="updateCartQty(${idx}, 1)">+</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</div>
+                        <button type="button" class="remove-btn" onclick="removeFromCart(${idx})">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('cart-content').innerHTML = `
+                <div class="cart-grid">
+                    <div class="cart-items">${cartItemsHtml}</div>
+                    <div class="order-summary">
+                        <h3 class="summary-title">Order Summary</h3>
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span>$${subtotal.toFixed(2)}</span>
+                        </div>
+                        <div class="summary-row summary-divider">
+                            <span>Shipping</span>
+                            <span style="color: ${shipping === 0 ? 'var(--teal)' : 'var(--txt)'}; font-weight: 600;">${shipping === 0 ? 'FREE' : '$' + shipping.toFixed(2)}</span>
+                        </div>
+                        <div class="summary-total">
+                            <span>Total</span>
+                            <span class="amount">$${total.toFixed(2)}</span>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="showPage('checkout')">Proceed to Checkout</button>
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: 12px;" onclick="showPage('products')">Continue Shopping</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateCartQty(idx, change) {
+            cart[idx].qty = Math.max(1, cart[idx].qty + change);
+            renderCart();
+        }
+
+        function removeFromCart(idx) {
+            cart.splice(idx, 1);
+            updateCartCount();
+            renderCart();
+        }
+
+        function renderCheckout() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const shipping = subtotal >= 60 ? 0 : 9.99;
+            const total = subtotal + shipping;
+
+            document.getElementById('checkout-total').textContent = `$${total.toFixed(2)}`;
+
+            const summaryHtml = cart.map(item => `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; padding-bottom: 12px; border-bottom: 1px solid #eee;">
+                    <div>
+                        <div style="font-weight: 600; color: var(--txt);">${item.name}</div>
+                        <div style="color: var(--muted); font-size: 12px;">${item.color} × ${item.qty}</div>
+                    </div>
+                    <div style="font-weight: 600; color: var(--navy);">$${(item.price * item.qty).toFixed(2)}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('checkout-summary').innerHTML = `
+                ${summaryHtml}
+                <div style="display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #e8e4dc; margin-bottom: 12px;">
+                    <span style="font-size: 13px;">Subtotal</span>
+                    <span style="font-size: 13px;">$${subtotal.toFixed(2)}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 2px solid var(--gold); font-size: 13px;">
+                    <span>Shipping</span>
+                    <span style="color: ${shipping === 0 ? 'var(--teal)' : 'var(--txt)'}; font-weight: 600;">${shipping === 0 ? 'FREE' : '$' + shipping.toFixed(2)}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 16px; font-family: 'Bebas Neue', sans-serif; font-weight: 700;">
+                    <span>Total</span>
+                    <span style="color: var(--gold);">$${total.toFixed(2)}</span>
+                </div>
+            `;
+
+            // Initialize Stripe when user reaches checkout
+            initStripe();
+        }
+
+        async function submitCheckout(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const address = document.getElementById('address').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const zip = document.getElementById('zip').value;
+
+            if (!name || !email || !address || !city || !state || !zip) {
+                alert('Please fill in all address fields');
+                return;
+            }
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const shipping = subtotal >= 60 ? 0 : 9.99;
+            const total = subtotal + shipping;
+            const amount = Math.round(total * 100); // Convert to cents
+
+            try {
+                // Create payment intent on backend
+                const response = await fetch('/.netlify/functions/create-payment-intent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: amount,
+                        email: email,
+                        metadata: {
+                            name: name,
+                            address: address,
+                            city: city,
+                            state: state,
+                            zip: zip
+                        }
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to create payment intent');
+
+                const data = await response.json();
+                const clientSecret = data.clientSecret;
+
+                // Confirm payment with Stripe
+                const result = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                        card: cardElement,
+                        billing_details: {
+                            name: name,
+                            email: email,
+                            address: {
+                                line1: address,
+                                city: city,
+                                state: state,
+                                postal_code: zip
+                            }
+                        }
+                    }
+                });
+
+                if (result.error) {
+                    document.getElementById('card-errors').textContent = result.error.message;
+                } else if (result.paymentIntent.status === 'succeeded') {
+                    cart = [];
+                    updateCartCount();
+                    showPage('confirmation');
+                }
+            } catch (err) {
+                console.error('Payment error:', err);
+                alert('Payment processing failed. Please try again.');
+            }
+        }
+
+        // Initialize
+        renderProducts();
+    </script>
+</body>
+</html>
