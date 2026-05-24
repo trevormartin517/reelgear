@@ -1,0 +1,11 @@
+[[redirects]]
+  from = "/"
+  to = "/reelfishigan.html"
+  status = 200
+  force = false
+
+[build]
+  functions = "netlify/functions"
+
+[dev]
+  port = 8888
