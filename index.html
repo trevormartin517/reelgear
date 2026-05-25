@@ -232,7 +232,7 @@
         function initializeCheckout() {
             if (!stripe) {
                 try {
-                    stripe = Stripe('pk_live_51P1fe6LhsSUmVAB0BFFn2RNqS8JDtD85195s7DullbZ50gW48quqzwYMnvGCxRPv8p9uIXkprpT1ZvUwCGx1HRsT00WTzJecoZ');
+                    stripe = Stripe('pk_live_51P1fe6LhsSUmVAB0ubb1Z3r1ArgPlPEfc9091em3U4NrVYc7RgXMc1eOT6KO1hLkPVjV7aTBzzotOCu6cmdIx70e003fzISPPa');
                     var elements = stripe.elements();
                     cardElement = elements.create('card');
                     cardElement.mount('#card-element');
