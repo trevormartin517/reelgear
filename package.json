@@ -1,5 +1,8 @@
 {
   "name": "reelfishigan",
   "version": "1.0.0",
-  "dependencies": { "stripe": "^11.15.0" }
+  "dependencies": {
+    "@vercel/speed-insights": "^2.0.0",
+    "stripe": "^11.15.0"
+  }
 }
