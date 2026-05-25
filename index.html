@@ -184,7 +184,21 @@
             var html = '';
             for (var i = 0; i < featured.length; i++) {
                 var p = featured[i];
-                html += '<div class="product-card"><div class="product-image">🎣</div><h3 class="product-name">' + p.name + '</h3><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button></div>';
+                var imageHtml = '';
+                
+                if (p.id === 1 || p.id === 2) {
+                    imageHtml = '<img src="/IMG_2684.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
+                } else if (p.id === 3) {
+                    imageHtml = '<img src="/IMG_2562.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
+                } else if (p.id === 4) {
+                    imageHtml = '<img src="/IMG_2562.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
+                } else if (p.id === 7) {
+                    imageHtml = '<img src="/IMG_2561.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
+                } else {
+                    imageHtml = '🎣';
+                }
+                
+                html += '<div class="product-card"><div class="product-image">' + imageHtml + '</div><h3 class="product-name">' + p.name + '</h3><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button></div>';
             }
             container.innerHTML = html;
         }
