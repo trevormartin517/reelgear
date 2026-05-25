@@ -200,11 +200,13 @@
                 } else if (p.id === 7) {
                     imageHtml = '<img id="garmin73-featured-img" src="/Garmin73SVblack.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
                     colorSelector = '<div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="garmin73-featured-color" value="black" checked onchange="changeFeaturedGarmin73(\'garmin73-featured-img\', \'black\')"> Black</label><label style="margin-right: 10px;"><input type="radio" name="garmin73-featured-color" value="blue" onchange="changeFeaturedGarmin73(\'garmin73-featured-img\', \'blue\')"> Blue</label><label><input type="radio" name="garmin73-featured-color" value="white" onchange="changeFeaturedGarmin73(\'garmin73-featured-img\', \'white\')"> White</label></div>';
+                } else if (p.id === 8) {
+                    imageHtml = '<img src="/Blkpurplehookcover.JPG" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
                 } else {
                     imageHtml = '🎣';
                 }
                 
-                html += '<div class="product-card"><div class="product-image">' + imageHtml + '</div>' + colorSelector + '<h3 class="product-name">' + p.name + '</h3><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button></div>';
+                html += '<div class="product-card" onclick="showProductDetail(' + p.id + ')" style="cursor: pointer;"><div class="product-image">' + imageHtml + '</div>' + colorSelector + '<h3 class="product-name">' + p.name + '</h3><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="event.stopPropagation(); addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button></div>';
             }
             container.innerHTML = html;
         }
@@ -306,6 +308,16 @@
             updateCartCount();
             alert('Added to cart: 16 Hook Covers (Size ' + size + ')');
             sizeSelect.value = '';
+        }
+
+        function showProductDetail(productId) {
+            var product = products.find(function(p) { return p.id === productId; });
+            if (!product) return;
+            switchPage('products');
+            setTimeout(function() {
+                var element = document.querySelector('[onclick*="' + productId + '"]');
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
         }
 
         function updateCartCount() {
