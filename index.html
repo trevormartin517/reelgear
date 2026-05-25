@@ -145,7 +145,10 @@
         var products = [
             { id: 1, name: 'Garmin Striker 4', price: 19.99, desc: 'Premium sun shade' },
             { id: 2, name: 'Garmin Striker 4 Plus', price: 21.99, desc: 'Scaled up version' },
-            { id: 3, name: 'Garmin Echomap 93SV', price: 24.99, desc: 'Advanced fish finder' }
+            { id: 3, name: 'Garmin Echomap 93SV', price: 24.99, desc: 'Advanced fish finder' },
+            { id: 4, name: 'Garmin Echomap 106SV', price: 29.99, desc: 'Wide screen shade' },
+            { id: 5, name: 'Garmin Echomap 126SV', price: 32.99, desc: 'Premium shade' },
+            { id: 6, name: 'Garmin GPSMAP 1022', price: 29.99, desc: 'Professional grade' }
         ];
 
         var cart = [];
@@ -183,10 +186,35 @@
             var html = '';
             for (var i = 0; i < products.length; i++) {
                 var p = products[i];
-                var imageHtml = (p.id === 1 || p.id === 2) ? '<img src="/IMG_2684.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">' : '🎣';
-                html += '<div class="product-card"><div class="product-image">' + imageHtml + '</div><h3 class="product-name">' + p.name + '</h3><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button></div>';
+                var imageHtml = '';
+                var colorSelector = '';
+                
+                if (p.id === 1 || p.id === 2) {
+                    imageHtml = '<img src="/IMG_2684.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
+                } else if (p.id === 3) {
+                    imageHtml = '<img id="echomap93-img" src="/IMG_2562.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
+                    colorSelector = '<div style="margin: 10px 0;"><label style="margin-right: 10px;"><input type="radio" name="echomap93-color" value="black" checked onchange="changeColor(\'echomap93-img\', \'black\', \'echomap\')"> Black</label><label><input type="radio" name="echomap93-color" value="white" onchange="changeColor(\'echomap93-img\', \'white\', \'echomap\')"> White</label></div>';
+                } else if (p.id === 4) {
+                    imageHtml = '<img id="echomap106-img" src="/IMG_2562.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
+                    colorSelector = '<div style="margin: 10px 0;"><label style="margin-right: 10px;"><input type="radio" name="echomap106-color" value="black" checked onchange="changeColor(\'echomap106-img\', \'black\', \'echomap106\')"> Black</label><label><input type="radio" name="echomap106-color" value="white" onchange="changeColor(\'echomap106-img\', \'white\', \'echomap106\')"> White</label></div>';
+                } else {
+                    imageHtml = '🎣';
+                }
+                
+                html += '<div class="product-card"><div class="product-image">' + imageHtml + '</div>' + colorSelector + '<h3 class="product-name">' + p.name + '</h3><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button></div>';
             }
             container.innerHTML = html;
+        }
+
+        function changeColor(imgId, color, product) {
+            var img = document.getElementById(imgId);
+            if (img) {
+                if (product === 'echomap') {
+                    img.src = color === 'black' ? '/IMG_2562.jpeg' : '/IMG_2560.jpeg';
+                } else if (product === 'echomap106') {
+                    img.src = color === 'black' ? '/IMG_2562.jpeg' : '/IMG_2560.jpeg';
+                }
+            }
         }
 
         function addToCart(id, name, price) {
@@ -206,14 +234,26 @@
                 return;
             }
 
-            var total = 0;
+            var subtotal = 0;
             var html = '';
             for (var i = 0; i < cart.length; i++) {
                 var item = cart[i];
-                total += item.price;
+                subtotal += item.price;
                 html += '<div class="comment-box" style="border-left-color: #C9933A;"><strong>' + item.name + '</strong> - $' + item.price.toFixed(2) + ' <button onclick="removeFromCart(' + i + ')" style="float: right; background: #e74c3c; padding: 5px 10px; font-size: 12px;">Remove</button></div>';
             }
-            html += '<div style="text-align: right; margin-top: 20px; font-size: 20px; font-weight: bold; color: #C9933A;">Total: $' + total.toFixed(2) + '</div>';
+            
+            var shipping = subtotal >= 60 ? 0 : 9.95;
+            var shippingText = shipping === 0 ? 'FREE (Order over $60)' : '$' + shipping.toFixed(2);
+            var tax = (subtotal + shipping) * 0.06;
+            var total = subtotal + shipping + tax;
+            
+            html += '<div style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 5px;">';
+            html += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Subtotal:</strong> $' + subtotal.toFixed(2) + '</div>';
+            html += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Shipping:</strong> ' + shippingText + '</div>';
+            html += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Tax (6%):</strong> $' + tax.toFixed(2) + '</div>';
+            html += '<div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #C9933A; border-top: 1px solid #ddd; padding-top: 10px;"><strong>Total:</strong> $' + total.toFixed(2) + '</div>';
+            html += '</div>';
+            
             container.innerHTML = html;
         }
 
@@ -236,10 +276,28 @@
                 }
             }
 
-            var total = 0;
+            var subtotal = 0;
             for (var i = 0; i < cart.length; i++) {
-                total += cart[i].price;
+                subtotal += cart[i].price;
             }
+            
+            var shipping = subtotal >= 60 ? 0 : 9.95;
+            var shippingText = shipping === 0 ? 'FREE (Order over $60)' : '$' + shipping.toFixed(2);
+            var tax = (subtotal + shipping) * 0.06;
+            var total = subtotal + shipping + tax;
+            
+            var summaryHtml = '<div style="background: white; padding: 15px; border-radius: 5px; margin-bottom: 20px;">';
+            summaryHtml += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Subtotal:</strong> $' + subtotal.toFixed(2) + '</div>';
+            summaryHtml += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Shipping:</strong> ' + shippingText + '</div>';
+            summaryHtml += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Tax (6%):</strong> $' + tax.toFixed(2) + '</div>';
+            summaryHtml += '<div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #C9933A; border-top: 2px solid #ddd; padding-top: 10px;"><strong>Total Due:</strong> $' + total.toFixed(2) + '</div>';
+            summaryHtml += '</div>';
+            
+            var checkoutForm = document.querySelector('form');
+            if (checkoutForm) {
+                checkoutForm.insertAdjacentHTML('beforeend', summaryHtml);
+            }
+            
             document.getElementById('checkout-total').textContent = '$' + total.toFixed(2);
         }
 
@@ -253,11 +311,16 @@
 
             var name = document.getElementById('fullName').value;
             var email = document.getElementById('email').value;
-            var amount = 0;
+            
+            var subtotal = 0;
             for (var i = 0; i < cart.length; i++) {
-                amount += cart[i].price;
+                subtotal += cart[i].price;
             }
-            amount = Math.round(amount * 100);
+            
+            var shipping = subtotal >= 60 ? 0 : 9.95;
+            var tax = (subtotal + shipping) * 0.06;
+            var total = subtotal + shipping + tax;
+            var amount = Math.round(total * 100);
 
             fetch('/api/create-payment-intent', {
                 method: 'POST',
