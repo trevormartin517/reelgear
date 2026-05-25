@@ -197,8 +197,8 @@
                     imageHtml = '<img id="gpsmap1022-featured-img" src="/IMG_2704.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
                     colorSelector = '<div style="margin: 10px 0;"><label style="margin-right: 10px;"><input type="radio" name="gpsmap1022-featured-color" value="black" checked onchange="changeFeaturedColor(\'gpsmap1022-featured-img\', \'black\')"> Black</label><label><input type="radio" name="gpsmap1022-featured-color" value="white" onchange="changeFeaturedColor(\'gpsmap1022-featured-img\', \'white\')"> White</label></div>';
                 } else if (p.id === 7) {
-                    imageHtml = '<img id="garmin73-featured-img" src="/IMG_2707.JPEG" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
-                    colorSelector = '<div style="margin: 10px 0;"><label style="margin-right: 10px;"><input type="radio" name="garmin73-featured-color" value="blue" checked onchange="changeFeaturedGarmin73(\'garmin73-featured-img\', \'blue\')"> Blue</label><label><input type="radio" name="garmin73-featured-color" value="white" onchange="changeFeaturedGarmin73(\'garmin73-featured-img\', \'white\')"> White</label></div>';
+                    imageHtml = '<img id="garmin73-featured-img" src="/IMG_2708.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
+                    colorSelector = '<div style="margin: 10px 0;"><label style="margin-right: 10px;"><input type="radio" name="garmin73-featured-color" value="black" checked onchange="changeFeaturedGarmin73(\'garmin73-featured-img\', \'black\')"> Black</label><label style="margin-right: 10px;"><input type="radio" name="garmin73-featured-color" value="blue" onchange="changeFeaturedGarmin73(\'garmin73-featured-img\', \'blue\')"> Blue</label><label><input type="radio" name="garmin73-featured-color" value="white" onchange="changeFeaturedGarmin73(\'garmin73-featured-img\', \'white\')"> White</label></div>';
                 } else {
                     imageHtml = '🎣';
                 }
@@ -218,7 +218,13 @@
         function changeFeaturedGarmin73(imgId, color) {
             var img = document.getElementById(imgId);
             if (img) {
-                img.src = color === 'blue' ? '/IMG_2707.JPEG' : '/IMG_2708.jpeg';
+                if (color === 'black') {
+                    img.src = '/IMG_2708.jpeg';
+                } else if (color === 'blue') {
+                    img.src = '/IMG_2707.JPEG';
+                } else if (color === 'white') {
+                    img.src = '/IMG_2708.jpeg';
+                }
             }
         }
 
@@ -242,8 +248,8 @@
                     imageHtml = '<img id="gpsmap1022-img" src="/IMG_2704.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
                     colorSelector = '<div style="margin: 10px 0;"><label style="margin-right: 10px;"><input type="radio" name="gpsmap1022-color" value="black" checked onchange="changeColor(\'gpsmap1022-img\', \'black\', \'gpsmap1022\')"> Black</label><label><input type="radio" name="gpsmap1022-color" value="white" onchange="changeColor(\'gpsmap1022-img\', \'white\', \'gpsmap1022\')"> White</label></div>';
                 } else if (p.id === 7) {
-                    imageHtml = '<img id="garmin73-img" src="/IMG_2707.JPEG" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
-                    colorSelector = '<div style="margin: 10px 0;"><label style="margin-right: 10px;"><input type="radio" name="garmin73-color" value="blue" checked onchange="changeColor(\'garmin73-img\', \'blue\', \'garmin73\')"> Blue</label><label><input type="radio" name="garmin73-color" value="white" onchange="changeColor(\'garmin73-img\', \'white\', \'garmin73\')"> White</label></div>';
+                    imageHtml = '<img id="garmin73-img" src="/IMG_2708.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
+                    colorSelector = '<div style="margin: 10px 0;"><label style="margin-right: 10px;"><input type="radio" name="garmin73-color" value="black" checked onchange="changeColor(\'garmin73-img\', \'black\', \'garmin73\')"> Black</label><label style="margin-right: 10px;"><input type="radio" name="garmin73-color" value="blue" onchange="changeColor(\'garmin73-img\', \'blue\', \'garmin73\')"> Blue</label><label><input type="radio" name="garmin73-color" value="white" onchange="changeColor(\'garmin73-img\', \'white\', \'garmin73\')"> White</label></div>';
                 } else {
                     imageHtml = '🎣';
                 }
@@ -263,7 +269,13 @@
                 } else if (product === 'gpsmap1022') {
                     img.src = color === 'black' ? '/IMG_2704.jpeg' : '/IMG_2702.jpeg';
                 } else if (product === 'garmin73') {
-                    img.src = color === 'blue' ? '/IMG_2707.JPEG' : '/IMG_2708.jpeg';
+                    if (color === 'black') {
+                        img.src = '/IMG_2708.jpeg';
+                    } else if (color === 'blue') {
+                        img.src = '/IMG_2707.JPEG';
+                    } else if (color === 'white') {
+                        img.src = '/IMG_2708.jpeg';
+                    }
                 }
             }
         }
