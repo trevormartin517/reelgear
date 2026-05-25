@@ -158,7 +158,8 @@
             { id: 5, name: 'Garmin Echomap 126SV', price: 32.99, desc: 'Premium shade' },
             { id: 6, name: 'Garmin GPSMAP 1022', price: 29.99, desc: 'Professional grade' },
             { id: 7, name: 'Garmin 73SV/CV', price: 22.99, desc: 'Compact sun shade' },
-            { id: 8, name: 'Treble Hook Covers', price: 5.99, desc: 'Various Sizes Available', sizes: ['1/0', '2/0', '3/0', '4/0', '5/0'] }
+            { id: 8, name: 'Treble Hook Covers', price: 5.99, desc: 'Various Sizes Available', sizes: ['1/0', '2/0', '3/0', '4/0', '5/0'] },
+            { id: 9, name: 'Stake Rod Holder', price: 14.99, desc: 'Fishing Rod Stand' }
         ];
 
         var cart = [];
@@ -276,6 +277,9 @@
                 } else if (p.id === 8) {
                     html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image"><img id="hookcover-img" src="/Blkpurplehookcover.JPG" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px;"><img src="/Blkpurplehookcover.JPG" onclick="changeHookImg(\'/Blkpurplehookcover.JPG\')" style="width: 50px; height: 50px; cursor: pointer; border: 2px solid gold;"><img src="/Blkpurplehookcover4.JPG" onclick="changeHookImg(\'/Blkpurplehookcover4.JPG\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Blkpurplehookcover3.JPG" onclick="changeHookImg(\'/Blkpurplehookcover3.JPG\')" style="width: 50px; height: 50px; cursor: pointer;"></div><h3 class="product-name">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><div style="margin: 10px 0;"><select id="hookcover-size" style="padding: 8px; width: 100%; border-radius: 5px; border: 1px solid #ccc;"><option value="">Select Size</option><option value="1/0">1/0</option><option value="2/0">2/0</option><option value="3/0">3/0</option><option value="4/0">4/0</option><option value="5/0">5/0</option></select></div><p style="font-size: 12px; color: #666;">16 per order</p><button onclick="addHookCoversToCart()">Add to Cart</button></div>';
                     continue;
+                } else if (p.id === 9) {
+                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image"><img id="stake-img" src="/Stakesample.jpg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><h3 class="product-name">' + p.name + '</h3><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="stake-color" value="green" checked onchange="changeStakeColor(\'stake-img\', \'green\'); updateStakePrice(\'green\')"> Green</label><label style="margin-right: 10px;"><input type="radio" name="stake-color" value="white" onchange="changeStakeColor(\'stake-img\', \'white\'); updateStakePrice(\'white\')"> White</label><label><input type="radio" name="stake-color" value="dual" onchange="changeStakeColor(\'stake-img\', \'dual\'); updateStakePrice(\'dual\')"> Dual Pack</label></div><div id="stake-price" class="product-price">$14.99</div><p class="product-desc">' + p.desc + '</p><button onclick="addStakeToCart()">Add to Cart</button></div>';
+                    continue;
                 } else {
                     imageHtml = '🎣';
                 }
@@ -328,6 +332,44 @@
             updateCartCount();
             alert('Added to cart: 16 Hook Covers (Size ' + size + ')');
             sizeSelect.value = '';
+        }
+
+        function changeStakeColor(imgId, color) {
+            var img = document.getElementById(imgId);
+            if (img) {
+                if (color === 'green') {
+                    img.src = '/Stakesample.jpg';
+                } else if (color === 'white') {
+                    img.src = '/Stakesample2.jpg';
+                } else if (color === 'dual') {
+                    img.src = '/Stakesample.jpg';
+                }
+            }
+        }
+
+        function updateStakePrice(color) {
+            var priceEl = document.getElementById('stake-price');
+            if (color === 'dual') {
+                priceEl.textContent = '$24.99';
+            } else {
+                priceEl.textContent = '$14.99';
+            }
+        }
+
+        function addStakeToCart() {
+            var colorRadios = document.getElementsByName('stake-color');
+            var selectedColor = '';
+            for (var i = 0; i < colorRadios.length; i++) {
+                if (colorRadios[i].checked) {
+                    selectedColor = colorRadios[i].value;
+                    break;
+                }
+            }
+            var name = 'Stake Rod Holder - ' + selectedColor.charAt(0).toUpperCase() + selectedColor.slice(1);
+            var price = selectedColor === 'dual' ? 24.99 : 14.99;
+            cart.push({ id: 9, name: name, price: price });
+            updateCartCount();
+            alert(name + ' added to cart!');
         }
 
         function updateCartCount() {
