@@ -1,21 +1,5 @@
 {
   "name": "reelfishigan",
   "version": "1.0.0",
-  "description": "3D Printed Fishing Gear eCommerce Site",
-  "scripts": {
-    "dev": "netlify dev",
-    "build": "npm install"
-  },
-  "dependencies": {
-    "stripe": "^11.15.0"
-  },
-  "devDependencies": {},
-  "keywords": [
-    "ecommerce",
-    "stripe",
-    "fishing",
-    "3d-printing"
-  ],
-  "author": "",
-  "license": "MIT"
+  "dependencies": { "stripe": "^11.15.0" }
 }
