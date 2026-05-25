@@ -174,8 +174,7 @@
             var html = '';
             for (var i = 0; i < featured.length; i++) {
                 var p = featured[i];
-                var imageHtml = (p.id === 1 || p.id === 2) ? '<img src="/IMG_2563.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">' : '<div class="product-image">🎣</div>';
-                html += '<div class="product-card"><div class="product-image" style="display: flex; align-items: center; justify-content: center;">' + imageHtml + '</div><h3 class="product-name">' + p.name + '</h3><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button></div>';
+                html += '<div class="product-card"><div class="product-image">🎣</div><h3 class="product-name">' + p.name + '</h3><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button></div>';
             }
             container.innerHTML = html;
         }
@@ -185,8 +184,7 @@
             var html = '';
             for (var i = 0; i < products.length; i++) {
                 var p = products[i];
-                var imageHtml = (p.id === 1 || p.id === 2) ? '<img src="/IMG_2563.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">' : '<div class="product-image">🎣</div>';
-                html += '<div class="product-card"><div class="product-image" style="display: flex; align-items: center; justify-content: center;">' + imageHtml + '</div><h3 class="product-name">' + p.name + '</h3><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button></div>';
+                html += '<div class="product-card"><div class="product-image">🎣</div><h3 class="product-name">' + p.name + '</h3><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button></div>';
             }
             container.innerHTML = html;
         }
