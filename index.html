@@ -437,7 +437,7 @@
             var tax = (subtotal + shipping) * 0.06;
             var total = subtotal + shipping + tax;
             
-            var summaryHtml = '<div style="background: white; padding: 15px; border-radius: 5px; margin-bottom: 20px;">';
+            var summaryHtml = '<div id="checkout-summary" style="background: white; padding: 15px; border-radius: 5px; margin-bottom: 20px;">';
             summaryHtml += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Subtotal:</strong> $' + subtotal.toFixed(2) + '</div>';
             summaryHtml += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Shipping:</strong> ' + shippingText + '</div>';
             summaryHtml += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Tax (6%):</strong> $' + tax.toFixed(2) + '</div>';
@@ -446,6 +446,10 @@
             
             var checkoutForm = document.querySelector('form');
             if (checkoutForm) {
+                var existingSummary = document.getElementById('checkout-summary');
+                if (existingSummary) {
+                    existingSummary.remove();
+                }
                 checkoutForm.insertAdjacentHTML('beforeend', summaryHtml);
             }
             
