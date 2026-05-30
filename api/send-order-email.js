@@ -20,7 +20,40 @@ module.exports = async (req, res) => {
       `${item.name} - $${item.price.toFixed(2)} ${item.qty ? `(Qty: ${item.qty})` : ''}`
     ).join('\n');
 
-    if (status === 'success') {
+    if (status === 'pending') {
+      // Email to merchant when customer clicks submit
+      const merchantEmailBody = `
+INCOMING ORDER SUBMISSION
+
+Customer Details:
+Name: ${customerName}
+Email: ${customerEmail}
+
+Shipping Address:
+${address}
+${city}, ${state} ${zipcode}
+
+Items Ordered:
+${itemsList}
+
+Subtotal: $${cartTotal.toFixed(2)}
+Total: $${total.toFixed(2)}
+
+---
+Order submission at: ${new Date().toLocaleString()}
+(Payment processing in progress - this is NOT a confirmed order yet)
+      `;
+
+      await resend.emails.send({
+        from: 'Reel Gear <onboarding@resend.dev>',
+        to: merchantEmails,
+        subject: `🎣 Order Submission from ${customerName}`,
+        text: merchantEmailBody,
+      });
+
+      return res.status(200).json({ success: true, message: 'Order email sent' });
+
+    } else if (status === 'success') {
       // Email to merchant(s)
       const merchantEmailBody = `
 NEW ORDER RECEIVED!
