@@ -117,9 +117,7 @@
                     <label>Card Details:</label>
                     <div id="card-element" style="border: 1px solid #ddd; padding: 10px; border-radius: 5px; background: white;"></div>
                 </div>
-                <div style="font-size: 20px; margin: 20px 0; color: #C9933A; font-weight: bold;">
-                    Total: <span id="checkout-total">$0.00</span>
-                </div>
+                <div id="order-summary-container"></div>
                 <button type="submit" style="width: 100%; padding: 15px;">Complete Payment</button>
             </form>
         </div>
@@ -437,23 +435,14 @@
             var tax = (subtotal + shipping) * 0.06;
             var total = subtotal + shipping + tax;
             
-            var summaryHtml = '<div id="checkout-summary" style="background: white; padding: 15px; border-radius: 5px; margin-bottom: 20px;">';
+            var summaryHtml = '<div style="background: white; padding: 15px; border-radius: 5px; margin-bottom: 20px;">';
             summaryHtml += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Subtotal:</strong> $' + subtotal.toFixed(2) + '</div>';
             summaryHtml += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Shipping:</strong> ' + shippingText + '</div>';
             summaryHtml += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Tax (6%):</strong> $' + tax.toFixed(2) + '</div>';
             summaryHtml += '<div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #C9933A; border-top: 2px solid #ddd; padding-top: 10px;"><strong>Total Due:</strong> $' + total.toFixed(2) + '</div>';
             summaryHtml += '</div>';
             
-            var checkoutForm = document.querySelector('form');
-            if (checkoutForm) {
-                var existingSummary = document.getElementById('checkout-summary');
-                if (existingSummary) {
-                    existingSummary.remove();
-                }
-                checkoutForm.insertAdjacentHTML('beforeend', summaryHtml);
-            }
-            
-            document.getElementById('checkout-total').textContent = '$' + total.toFixed(2);
+            document.getElementById('order-summary-container').innerHTML = summaryHtml;
         }
 
         function processPayment(event) {
