@@ -2,7 +2,7 @@ const { Resend } = require('resend');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const merchantEmails = ['TrevorMartin517@gmail.com', 'Bearlovesdolly@yahoo.com'];
+const merchantEmails = ['salesandsupport@reelgearco.com'];
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -21,7 +21,6 @@ module.exports = async (req, res) => {
     ).join('\n');
 
     if (status === 'pending') {
-      // Email to merchant when customer clicks submit
       const merchantEmailBody = `
 INCOMING ORDER SUBMISSION
 
@@ -45,7 +44,7 @@ Order submission at: ${new Date().toLocaleString()}
       `;
 
       await resend.emails.send({
-        from: 'Reel Gear <onboarding@resend.dev>',
+        from: 'Reel Gear Co <salesandsupport@reelgearco.com>',
         to: merchantEmails,
         subject: `🎣 Order Submission from ${customerName}`,
         text: merchantEmailBody,
@@ -54,14 +53,12 @@ Order submission at: ${new Date().toLocaleString()}
       return res.status(200).json({ success: true, message: 'Order email sent' });
 
     } else if (status === 'success') {
-      // Email to merchant(s)
       const merchantEmailBody = `
 NEW ORDER RECEIVED!
 
 Customer Details:
 Name: ${customerName}
 Email: ${customerEmail}
-Phone: N/A
 
 Shipping Address:
 ${address}
@@ -77,15 +74,13 @@ Total: $${total.toFixed(2)}
 Order received at: ${new Date().toLocaleString()}
       `;
 
-      // Send to merchant
       await resend.emails.send({
-        from: 'Reel Gear <onboarding@resend.dev>',
+        from: 'Reel Gear Co <salesandsupport@reelgearco.com>',
         to: merchantEmails,
         subject: `🎣 New Order from ${customerName}`,
         text: merchantEmailBody,
       });
 
-      // Email to customer
       const customerEmailBody = `
 Thank you for your order, ${customerName}!
 
@@ -100,21 +95,22 @@ Total: $${total.toFixed(2)}
 
 We'll send you a shipping notification soon!
 
+Questions? Reply to this email or reach us at salesandsupport@reelgearco.com
+
 Best,
-Reel Gear Team
+Reel Gear Co Team
       `;
 
       await resend.emails.send({
-        from: 'Reel Gear <onboarding@resend.dev>',
+        from: 'Reel Gear Co <salesandsupport@reelgearco.com>',
         to: customerEmail,
-        subject: '🎣 Order Confirmation - Reel Gear',
+        subject: '🎣 Order Confirmation - Reel Gear Co',
         text: customerEmailBody,
       });
 
       return res.status(200).json({ success: true, message: 'Order emails sent' });
 
     } else if (status === 'failed') {
-      // Payment failed email to merchant
       const failedEmailBody = `
 PAYMENT FAILED
 
@@ -131,7 +127,7 @@ Please follow up with customer if needed.
       `;
 
       await resend.emails.send({
-        from: 'Reel Gear <onboarding@resend.dev>',
+        from: 'Reel Gear Co <salesandsupport@reelgearco.com>',
         to: merchantEmails,
         subject: `⚠️ Payment Failed - ${customerName}`,
         text: failedEmailBody,
