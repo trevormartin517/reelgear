@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#061827;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0D3352;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#C9933A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E8B45C;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle water ripple lines -->
+  <ellipse cx="600" cy="700" rx="900" ry="300" fill="none" stroke="#0D4A7A" stroke-width="1" opacity="0.3"/>
+  <ellipse cx="600" cy="750" rx="1000" ry="350" fill="none" stroke="#0D4A7A" stroke-width="1" opacity="0.2"/>
+  <ellipse cx="600" cy="800" rx="1100" ry="400" fill="none" stroke="#0D4A7A" stroke-width="1" opacity="0.15"/>
+
+  <!-- Gold accent bar top -->
+  <rect x="0" y="0" width="1200" height="6" fill="url(#gold)"/>
+
+  <!-- Gold accent bar bottom -->
+  <rect x="0" y="624" width="1200" height="6" fill="url(#gold)"/>
+
+  <!-- Left decorative bracket -->
+  <rect x="60" y="60" width="4" height="80" fill="#C9933A" opacity="0.8"/>
+  <rect x="60" y="60" width="40" height="4" fill="#C9933A" opacity="0.8"/>
+  <rect x="60" y="490" width="4" height="80" fill="#C9933A" opacity="0.8"/>
+  <rect x="60" y="566" width="40" height="4" fill="#C9933A" opacity="0.8"/>
+
+  <!-- Right decorative bracket -->
+  <rect x="1136" y="60" width="4" height="80" fill="#C9933A" opacity="0.8"/>
+  <rect x="1100" y="60" width="40" height="4" fill="#C9933A" opacity="0.8"/>
+  <rect x="1136" y="490" width="4" height="80" fill="#C9933A" opacity="0.8"/>
+  <rect x="1100" y="566" width="40" height="4" fill="#C9933A" opacity="0.8"/>
+
+  <!-- Fishing rod graphic - left side -->
+  <line x1="100" y1="150" x2="400" y2="320" stroke="#C9933A" stroke-width="3" opacity="0.6"/>
+  <line x1="400" y1="320" x2="420" y2="500" stroke="#8B6914" stroke-width="2" opacity="0.5" stroke-dasharray="4,4"/>
+  <!-- Reel circle -->
+  <circle cx="155" cy="195" r="22" fill="none" stroke="#C9933A" stroke-width="3" opacity="0.7"/>
+  <circle cx="155" cy="195" r="10" fill="#C9933A" opacity="0.5"/>
+
+  <!-- 3D printer graphic - right side -->
+  <rect x="820" y="180" width="120" height="100" rx="4" fill="none" stroke="#C9933A" stroke-width="2" opacity="0.5"/>
+  <rect x="840" y="200" width="80" height="60" rx="2" fill="#0D3352" stroke="#C9933A" stroke-width="1" opacity="0.6"/>
+  <!-- Print bed -->
+  <rect x="820" y="280" width="120" height="8" rx="2" fill="#C9933A" opacity="0.4"/>
+  <!-- Nozzle -->
+  <rect x="870" y="240" width="10" height="30" rx="2" fill="#C9933A" opacity="0.7"/>
+  <!-- Printing object (sun shade shape) -->
+  <rect x="855" y="265" width="40" height="12" rx="3" fill="#E8B45C" opacity="0.8"/>
+  <!-- Dots suggesting printing -->
+  <circle cx="875" cy="255" r="2" fill="#E8B45C" opacity="0.6"/>
+  <circle cx="875" cy="248" r="1.5" fill="#E8B45C" opacity="0.4"/>
+  <circle cx="875" cy="243" r="1" fill="#E8B45C" opacity="0.2"/>
+
+  <!-- Fish icon -->
+  <ellipse cx="980" cy="400" rx="45" ry="22" fill="#C9933A" opacity="0.25"/>
+  <polygon points="1025,400 1050,380 1050,420" fill="#C9933A" opacity="0.25"/>
+  <circle cx="965" cy="395" r="4" fill="#E8B45C" opacity="0.5"/>
+
+  <!-- Main logo text -->
+  <text x="600" y="240" font-family="Georgia, 'Times New Roman', serif" font-size="88" font-weight="bold" fill="url(#gold)" text-anchor="middle" filter="url(#glow)" letter-spacing="4">REELGEARCO</text>
+
+  <!-- Fishing hook accent under title -->
+  <line x1="200" y1="265" x2="500" y2="265" stroke="#C9933A" stroke-width="1.5" opacity="0.5"/>
+  <line x1="700" y1="265" x2="1000" y2="265" stroke="#C9933A" stroke-width="1.5" opacity="0.5"/>
+  <circle cx="600" cy="265" r="4" fill="#C9933A"/>
+
+  <!-- Tagline -->
+  <text x="600" y="330" font-family="Georgia, 'Times New Roman', serif" font-size="28" fill="#FFFFFF" text-anchor="middle" opacity="0.85" letter-spacing="6">ALL YOUR 3D PRINTED FISHING NEEDS</text>
+
+  <!-- Product highlight pills -->
+  <rect x="220" y="390" width="220" height="44" rx="22" fill="#C9933A" opacity="0.15" stroke="#C9933A" stroke-width="1.5"/>
+  <text x="330" y="418" font-family="Georgia, serif" font-size="16" fill="#E8B45C" text-anchor="middle" letter-spacing="1">🎣 Sun Shades</text>
+
+  <rect x="490" y="390" width="220" height="44" rx="22" fill="#C9933A" opacity="0.15" stroke="#C9933A" stroke-width="1.5"/>
+  <text x="600" y="418" font-family="Georgia, serif" font-size="16" fill="#E8B45C" text-anchor="middle" letter-spacing="1">🪝 Hook Covers</text>
+
+  <rect x="760" y="390" width="220" height="44" rx="22" fill="#C9933A" opacity="0.15" stroke="#C9933A" stroke-width="1.5"/>
+  <text x="870" y="418" font-family="Georgia, serif" font-size="16" fill="#E8B45C" text-anchor="middle" letter-spacing="1">🎯 Rod Holders</text>
+
+  <!-- URL -->
+  <text x="600" y="530" font-family="Georgia, serif" font-size="22" fill="#C9933A" text-anchor="middle" opacity="0.9" letter-spacing="2">www.reelgearco.com</text>
+
+  <!-- Garmin badge -->
+  <text x="600" y="575" font-family="Georgia, serif" font-size="15" fill="#FFFFFF" text-anchor="middle" opacity="0.45" letter-spacing="3">GARMIN COMPATIBLE · CUSTOM PRINTED · SHIPS FAST</text>
+</svg>
