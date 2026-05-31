@@ -170,7 +170,8 @@
             { id: 6, name: 'Garmin GPSMAP 1022', price: 29.99, desc: 'Professional grade' },
             { id: 7, name: 'Garmin 73SV/CV', price: 14.99, desc: 'Compact sun shade' },
             { id: 8, name: 'Treble Hook Covers', price: 5.99, desc: 'Various Sizes Available', sizes: ['1/0', '2/0', '3/0', '4/0', '5/0'] },
-            { id: 9, name: 'Stake Rod Holder', price: 14.99, desc: 'Fishing Rod Stand' }
+            { id: 9, name: 'Stake Rod Holder', price: 14.99, desc: 'Fishing Rod Stand' },
+            { id: 10, name: 'Mountable Rod Holder', price: 19.99, desc: 'Mountable rod holder for boat or dock' }
         ];
 
         var cart = [];
@@ -216,11 +217,22 @@
                     imageHtml = '<img src="/Blkpurplehookcover.JPG" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
                 } else if (p.id === 9) {
                     imageHtml = '<img src="/Stakesample.jpg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
+                } else if (p.id === 10) {
+                    imageHtml = '<img id="mountrod-featured-img" src="/Multirodholder.jpg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
+                    colorSelector = '<div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="mountrod-featured-color" value="standard" checked onchange="changeFeaturedMountRod(\'standard\')"> Standard</label><label style="margin-right: 10px;"><input type="radio" name="mountrod-featured-color" value="silver" onchange="changeFeaturedMountRod(\'silver\')"> Silver</label><label><input type="radio" name="mountrod-featured-color" value="orange" onchange="changeFeaturedMountRod(\'orange\')"> Orange</label></div>';
                 } else {
                     imageHtml = '🎣';
                 }
                 
-                html += '<div class="product-card" style="cursor: pointer;"><div class="product-image">' + imageHtml + '</div><h3 class="product-name">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="event.stopPropagation(); addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button></div>';
+                var addBtn = '';
+                if (p.id === 10) {
+                    addBtn = '<button onclick="event.stopPropagation(); addMountRodFeaturedToCart()">Add to Cart</button>';
+                } else if (p.id === 9) {
+                    addBtn = '<button onclick="event.stopPropagation(); addStakeToCart()">Add to Cart</button>';
+                } else {
+                    addBtn = '<button onclick="event.stopPropagation(); addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button>';
+                }
+                html += '<div class="product-card" style="cursor: pointer;"><div class="product-image">' + imageHtml + '</div><h3 class="product-name">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p>' + addBtn + '</div>';
             }
             container.innerHTML = html;
             // Add click handlers to featured product cards
@@ -288,10 +300,13 @@
                     imageHtml = '<img id="garmin73-img" src="/Garmin73SVblack.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
                     colorSelector = '<div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="garmin73-color" value="black" checked onchange="changeColor(\'garmin73-img\', \'black\', \'garmin73\')"> Black</label><label style="margin-right: 10px;"><input type="radio" name="garmin73-color" value="blue" onchange="changeColor(\'garmin73-img\', \'blue\', \'garmin73\')"> Blue</label><label><input type="radio" name="garmin73-color" value="white" onchange="changeColor(\'garmin73-img\', \'white\', \'garmin73\')"> White</label></div>';
                 } else if (p.id === 8) {
-                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image"><img id="hookcover-img" src="/Blkpurplehookcover.JPG" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px;"><img src="/Blkpurplehookcover.JPG" onclick="changeHookImg(\'/Blkpurplehookcover.JPG\')" style="width: 50px; height: 50px; cursor: pointer; border: 2px solid gold;"><img src="/Blkpurplehookcover4.JPG" onclick="changeHookImg(\'/Blkpurplehookcover4.JPG\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Blkpurplehookcover3.JPG" onclick="changeHookImg(\'/Blkpurplehookcover3.JPG\')" style="width: 50px; height: 50px; cursor: pointer;"></div><h3 class="product-name">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><div style="margin: 10px 0;"><select id="hookcover-size" style="padding: 8px; width: 100%; border-radius: 5px; border: 1px solid #ccc;"><option value="">Select Size</option><option value="1/0">1/0</option><option value="2/0">2/0</option><option value="3/0">3/0</option><option value="4/0">4/0</option><option value="5/0">5/0</option></select></div><p style="font-size: 12px; color: #666;">16 per order</p><button onclick="addHookCoversToCart()">Add to Cart</button></div>';
+                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image"><img id="hookcover-img" src="/Blkpurplehookcover.JPG" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px;"><img src="/Blkpurplehookcover.JPG" onclick="changeHookImg(\'/Blkpurplehookcover.JPG\')" style="width: 50px; height: 50px; cursor: pointer; border: 2px solid gold;"><img src="/Blkpurplehookcover4.JPG" onclick="changeHookImg(\'/Blkpurplehookcover4.JPG\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Blkpurplehookcover3.JPG" onclick="changeHookImg(\'/Blkpurplehookcover3.JPG\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Hookcoverpole.jpg" onclick="changeHookImg(\'/Hookcoverpole.jpg\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Hookcoverpole2.jpg" onclick="changeHookImg(\'/Hookcoverpole2.jpg\')" style="width: 50px; height: 50px; cursor: pointer;"></div><h3 class="product-name">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><div style="margin: 10px 0;"><select id="hookcover-size" style="padding: 8px; width: 100%; border-radius: 5px; border: 1px solid #ccc;"><option value="">Select Size</option><option value="1/0">1/0</option><option value="2/0">2/0</option><option value="3/0">3/0</option><option value="4/0">4/0</option><option value="5/0">5/0</option></select></div><p style="font-size: 12px; color: #666;">16 per order</p><button onclick="addHookCoversToCart()">Add to Cart</button></div>';
                     continue;
                 } else if (p.id === 9) {
                     html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image"><img id="stake-img" src="/Greenstakefront.jpg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><h3 class="product-name">' + p.name + '</h3><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="stake-color" value="green" checked onchange="changeStakeColor(\'stake-img\', \'green\'); updateStakePrice(\'green\')"> Green</label><label style="margin-right: 10px;"><input type="radio" name="stake-color" value="white" onchange="changeStakeColor(\'stake-img\', \'white\'); updateStakePrice(\'white\')"> White</label><label><input type="radio" name="stake-color" value="dual" onchange="changeStakeColor(\'stake-img\', \'dual\'); updateStakePrice(\'dual\')"> Dual Pack</label></div><div id="stake-price" class="product-price">$14.99</div><p class="product-desc">' + p.desc + '</p><button onclick="addStakeToCart()">Add to Cart</button></div>';
+                    continue;
+                } else if (p.id === 10) {
+                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image"><img id="mountrod-img" src="/Multirodholder.jpg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><h3 class="product-name">' + p.name + '</h3><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="mountrod-color" value="standard" checked onchange="changeMountRodColor(\'standard\')"> Standard</label><label style="margin-right: 10px;"><input type="radio" name="mountrod-color" value="silver" onchange="changeMountRodColor(\'silver\')"> Silver</label><label><input type="radio" name="mountrod-color" value="orange" onchange="changeMountRodColor(\'orange\')"> Orange</label></div><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addMountRodToCart()">Add to Cart</button></div>';
                     continue;
                 } else {
                     imageHtml = '🎣';
@@ -345,6 +360,39 @@
             updateCartCount();
             alert('Added to cart: 16 Hook Covers (Size ' + size + ')');
             sizeSelect.value = '';
+        }
+
+        function changeFeaturedMountRod(color) {
+            var img = document.getElementById('mountrod-featured-img');
+            if (img) {
+                if (color === 'standard') img.src = '/Multirodholder.jpg';
+                else if (color === 'silver') img.src = '/Silverrodholder.jpg';
+                else if (color === 'orange') img.src = '/Orangerodholder.jpg';
+            }
+        }
+
+        function changeMountRodColor(color) {
+            var img = document.getElementById('mountrod-img');
+            if (img) {
+                if (color === 'standard') img.src = '/Multirodholder.jpg';
+                else if (color === 'silver') img.src = '/Silverrodholder.jpg';
+                else if (color === 'orange') img.src = '/Orangerodholder.jpg';
+            }
+        }
+
+        function addMountRodToCart() {
+            var colorRadios = document.getElementsByName('mountrod-color');
+            var selectedColor = 'Standard';
+            for (var i = 0; i < colorRadios.length; i++) {
+                if (colorRadios[i].checked) {
+                    selectedColor = colorRadios[i].value.charAt(0).toUpperCase() + colorRadios[i].value.slice(1);
+                    break;
+                }
+            }
+            var name = 'Mountable Rod Holder - ' + selectedColor;
+            cart.push({ id: 10, name: name, price: 19.99 });
+            updateCartCount();
+            alert(name + ' added to cart!');
         }
 
         function changeStakeColor(imgId, color) {
