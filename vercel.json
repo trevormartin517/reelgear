@@ -1,38 +1,6 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.jpg",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.jpeg",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.JPG",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.png",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.svg",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/(.*\\.(jpg|jpeg|JPG|png|svg|gif))", "dest": "/$1" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
