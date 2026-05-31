@@ -137,7 +137,7 @@
         <div class="container">
             <h1>Community</h1>
             <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
-                <h3>Leave a Comment</h3>
+                <h3>Share Your Catch 🎣</h3>
                 <div class="form-group">
                     <label>Name:</label>
                     <input type="text" id="commentName">
@@ -146,9 +146,16 @@
                     <label>Comment:</label>
                     <textarea id="commentText" rows="4"></textarea>
                 </div>
-                <button onclick="addComment()">Post Comment</button>
+                <div class="form-group">
+                    <label>Upload a Photo (optional):</label>
+                    <input type="file" id="commentPhoto" accept="image/*" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px; background: #fafafa;">
+                    <div id="photo-preview" style="margin-top: 10px; display: none;">
+                        <img id="preview-img" style="max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: cover;">
+                    </div>
+                </div>
+                <button onclick="addComment()">Post to Community</button>
             </div>
-            <h3>Comments</h3>
+            <h3>Community Posts</h3>
             <div id="comments-container"></div>
         </div>
     </div>
@@ -367,7 +374,6 @@
             if (img) {
                 if (color === 'gold') img.src = '/Goldrodholder.jpg';
                 else if (color === 'silver') img.src = '/Silverrodholder.jpg';
-                else if (color === 'orange') img.src = '/Orangerodholder.jpg';
                 else if (color === 'blue') img.src = '/Bluerodholder.jpg';
             }
         }
@@ -377,7 +383,6 @@
             if (img) {
                 if (color === 'gold') img.src = '/Goldrodholder.jpg';
                 else if (color === 'silver') img.src = '/Silverrodholder.jpg';
-                else if (color === 'orange') img.src = '/Orangerodholder.jpg';
                 else if (color === 'blue') img.src = '/Bluerodholder.jpg';
             }
         }
@@ -637,39 +642,132 @@
             });
         }
 
+        // Photo preview on file select
+        document.addEventListener('DOMContentLoaded', function() {
+            var photoInput = document.getElementById('commentPhoto');
+            if (photoInput) {
+                photoInput.addEventListener('change', function() {
+                    var file = this.files[0];
+                    if (file) {
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            document.getElementById('preview-img').src = e.target.result;
+                            document.getElementById('photo-preview').style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        });
+
         function addComment() {
-            var name = document.getElementById('commentName').value;
-            var text = document.getElementById('commentText').value;
-            
+            var name = document.getElementById('commentName').value.trim();
+            var text = document.getElementById('commentText').value.trim();
+            var photoInput = document.getElementById('commentPhoto');
+
             if (!name || !text) {
-                alert('Please fill in all fields');
+                alert('Please fill in your name and comment');
                 return;
             }
 
-            var comments = JSON.parse(localStorage.getItem('comments') || '[]');
-            comments.push({ name: name, text: text, date: new Date().toLocaleString() });
-            localStorage.setItem('comments', JSON.stringify(comments));
-            
-            document.getElementById('commentName').value = '';
-            document.getElementById('commentText').value = '';
-            displayComments();
+            var file = photoInput && photoInput.files[0];
+
+            function submitPost(photoData) {
+                var postBtn = document.querySelector('#community button');
+                postBtn.disabled = true;
+                postBtn.textContent = 'Posting...';
+
+                fetch('/api/community-posts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: name,
+                        text: text,
+                        photo: photoData || null,
+                        date: new Date().toLocaleString()
+                    })
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                    } else {
+                        document.getElementById('commentName').value = '';
+                        document.getElementById('commentText').value = '';
+                        if (photoInput) photoInput.value = '';
+                        document.getElementById('photo-preview').style.display = 'none';
+                        displayComments();
+                    }
+                })
+                .catch(function(err) {
+                    alert('Failed to post. Please try again.');
+                    console.error(err);
+                })
+                .finally(function() {
+                    postBtn.disabled = false;
+                    postBtn.textContent = 'Post to Community';
+                });
+            }
+
+            if (file) {
+                // Resize large images before upload
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = new Image();
+                    img.onload = function() {
+                        var canvas = document.createElement('canvas');
+                        var maxW = 1200, maxH = 1200;
+                        var w = img.width, h = img.height;
+                        if (w > maxW || h > maxH) {
+                            var ratio = Math.min(maxW / w, maxH / h);
+                            w = Math.round(w * ratio);
+                            h = Math.round(h * ratio);
+                        }
+                        canvas.width = w;
+                        canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        submitPost(canvas.toDataURL('image/jpeg', 0.8));
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                submitPost(null);
+            }
         }
 
         function displayComments() {
             var container = document.getElementById('comments-container');
-            var comments = JSON.parse(localStorage.getItem('comments') || '[]');
-            
-            if (comments.length === 0) {
-                container.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">No comments yet. Be the first!</p>';
-                return;
-            }
+            container.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">Loading posts...</p>';
 
-            var html = '';
-            for (var i = 0; i < comments.length; i++) {
-                var comment = comments[i];
-                html += '<div class="comment-box"><div style="font-weight: bold; color: #061827; margin-bottom: 5px;">' + comment.name + '</div><div style="font-size: 12px; color: #999;">' + comment.date + '</div><div style="color: #333; margin-top: 10px; line-height: 1.6;">' + comment.text + '</div></div>';
-            }
-            container.innerHTML = html;
+            fetch('/api/community-posts')
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                var posts = data.posts || [];
+
+                if (posts.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; padding: 40px; color: #666;">No posts yet. Be the first to share!</p>';
+                    return;
+                }
+
+                var html = '';
+                for (var i = 0; i < posts.length; i++) {
+                    var comment = typeof posts[i] === 'string' ? JSON.parse(posts[i]) : posts[i];
+                    html += '<div class="comment-box" style="margin-bottom: 20px;">';
+                    if (comment.photo) {
+                        html += '<img src="' + comment.photo + '" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: 8px; margin-bottom: 12px;">';
+                    }
+                    html += '<div style="font-weight: bold; color: #061827; margin-bottom: 4px;">' + comment.name + '</div>';
+                    html += '<div style="font-size: 12px; color: #999; margin-bottom: 8px;">' + comment.date + '</div>';
+                    html += '<div style="color: #333; line-height: 1.6;">' + comment.text + '</div>';
+                    html += '</div>';
+                }
+                container.innerHTML = html;
+            })
+            .catch(function(err) {
+                container.innerHTML = '<p style="text-align: center; padding: 40px; color: #e74c3c;">Failed to load posts. Please refresh.</p>';
+                console.error(err);
+            });
         }
 
         displayFeaturedProducts();
