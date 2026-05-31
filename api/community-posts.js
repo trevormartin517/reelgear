@@ -1,4 +1,4 @@
-const { put, list } = require('@vercel/blob');
+const { put, list, del } = require('@vercel/blob');
 
 module.exports = async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -8,22 +8,15 @@ module.exports = async function handler(req, res) {
 
     if (req.method === 'OPTIONS') return res.status(200).end();
 
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
+
     async function loadPosts() {
         try {
-            const { blobs } = await list({ 
-                prefix: 'community/index.json', 
-                token: process.env.BLOB_READ_WRITE_TOKEN 
-            });
+            const { blobs } = await list({ prefix: 'community/', token });
             if (blobs.length === 0) return [];
-            // Sort by uploadedAt descending to always get the latest
             blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
             const response = await fetch(blobs[0].url + '?t=' + Date.now());
-            const data = await response.json();
-            // Clean up old blobs, keep only the latest
-            for (let i = 1; i < blobs.length; i++) {
-                await fetch(blobs[i].url, { method: 'DELETE', headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` } });
-            }
-            return data;
+            return await response.json();
         } catch (e) {
             console.error('loadPosts error:', e.message);
             return [];
@@ -31,11 +24,16 @@ module.exports = async function handler(req, res) {
     }
 
     async function savePosts(posts) {
+        // Delete ALL existing community blobs first
+        const { blobs } = await list({ prefix: 'community/', token });
+        if (blobs.length > 0) {
+            await del(blobs.map(b => b.url), { token });
+        }
+        // Write fresh single file
         await put('community/index.json', JSON.stringify(posts), {
             access: 'public',
             contentType: 'application/json',
-            allowOverwrite: true,
-            token: process.env.BLOB_READ_WRITE_TOKEN,
+            token,
         });
     }
 
