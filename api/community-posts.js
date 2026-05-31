@@ -16,7 +16,7 @@ module.exports = async function handler(req, res) {
                 token: process.env.BLOB_READ_WRITE_TOKEN 
             });
             if (blobs.length === 0) return [];
-            const response = await fetch(blobs[0].url);
+            const response = await fetch(blobs[0].url + '?t=' + Date.now());
             return await response.json();
         } catch (e) {
             console.error('loadPosts error:', e);
