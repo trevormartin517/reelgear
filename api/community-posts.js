@@ -15,8 +15,15 @@ module.exports = async function handler(req, res) {
                 token: process.env.BLOB_READ_WRITE_TOKEN 
             });
             if (blobs.length === 0) return [];
+            // Sort by uploadedAt descending to always get the latest
+            blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
             const response = await fetch(blobs[0].url + '?t=' + Date.now());
-            return await response.json();
+            const data = await response.json();
+            // Clean up old blobs, keep only the latest
+            for (let i = 1; i < blobs.length; i++) {
+                await fetch(blobs[i].url, { method: 'DELETE', headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` } });
+            }
+            return data;
         } catch (e) {
             console.error('loadPosts error:', e.message);
             return [];
