@@ -9,26 +9,24 @@ module.exports = async function handler(req, res) {
         return res.status(200).end();
     }
 
+    // Support both token naming conventions
+    const token = process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_TOKEN;
+    console.log('Token present:', !!token);
+    console.log('Env keys:', Object.keys(process.env).filter(k => k.startsWith('BLOB')));
+
     async function loadPosts() {
         try {
             const { blobs } = await list({ 
                 prefix: 'community/index.json', 
-                token: process.env.BLOB_READ_WRITE_TOKEN 
+                token
             });
-            console.log('Blobs found:', JSON.stringify(blobs.map(b => b.url)));
-            if (blobs.length === 0) {
-                console.log('No blobs found');
-                return [];
-            }
-            const url = blobs[0].url + '?t=' + Date.now();
-            console.log('Fetching:', url);
-            const response = await fetch(url);
+            console.log('Blobs found:', blobs.length);
+            if (blobs.length === 0) return [];
+            const response = await fetch(blobs[0].url + '?t=' + Date.now());
             console.log('Fetch status:', response.status);
-            const data = await response.json();
-            console.log('Posts count:', data.length);
-            return data;
+            return await response.json();
         } catch (e) {
-            console.error('loadPosts error:', e);
+            console.error('loadPosts error:', e.message);
             return [];
         }
     }
@@ -38,7 +36,7 @@ module.exports = async function handler(req, res) {
             access: 'public',
             contentType: 'application/json',
             allowOverwrite: true,
-            token: process.env.BLOB_READ_WRITE_TOKEN,
+            token,
         });
     }
 
@@ -46,10 +44,9 @@ module.exports = async function handler(req, res) {
         try {
             const posts = await loadPosts();
             res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
-            res.setHeader('Pragma', 'no-cache');
             return res.status(200).json({ posts });
         } catch (err) {
-            console.error('GET error:', err);
+            console.error('GET error:', err.message);
             return res.status(500).json({ error: 'Failed to load posts' });
         }
     }
@@ -57,10 +54,7 @@ module.exports = async function handler(req, res) {
     if (req.method === 'POST') {
         try {
             const { name, text, photo, date } = req.body;
-
-            if (!name || !text) {
-                return res.status(400).json({ error: 'Name and comment are required' });
-            }
+            if (!name || !text) return res.status(400).json({ error: 'Name and comment are required' });
 
             let photoData = null;
             if (photo) {
@@ -68,7 +62,7 @@ module.exports = async function handler(req, res) {
                 if (matches && matches[2].length <= 2000000) {
                     photoData = photo;
                 } else if (photo.length > 2000000) {
-                    return res.status(400).json({ error: 'Photo too large. Please use a smaller image.' });
+                    return res.status(400).json({ error: 'Photo too large.' });
                 }
             }
 
@@ -76,10 +70,9 @@ module.exports = async function handler(req, res) {
             posts.unshift({ name, text, photo: photoData, date });
             if (posts.length > 50) posts.length = 50;
             await savePosts(posts);
-
             return res.status(200).json({ success: true });
         } catch (err) {
-            console.error('POST error:', err);
+            console.error('POST error:', err.message);
             return res.status(500).json({ error: 'Failed to save post' });
         }
     }
