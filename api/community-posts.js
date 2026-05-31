@@ -4,26 +4,18 @@ module.exports = async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Cache-Control', 'no-store');
 
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
-
-    // Support both token naming conventions
-    const token = process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_TOKEN;
-    console.log('Token present:', !!token);
-    console.log('Env keys:', Object.keys(process.env).filter(k => k.startsWith('BLOB')));
+    if (req.method === 'OPTIONS') return res.status(200).end();
 
     async function loadPosts() {
         try {
             const { blobs } = await list({ 
                 prefix: 'community/index.json', 
-                token
+                token: process.env.BLOB_READ_WRITE_TOKEN 
             });
-            console.log('Blobs found:', blobs.length);
             if (blobs.length === 0) return [];
             const response = await fetch(blobs[0].url + '?t=' + Date.now());
-            console.log('Fetch status:', response.status);
             return await response.json();
         } catch (e) {
             console.error('loadPosts error:', e.message);
@@ -36,14 +28,13 @@ module.exports = async function handler(req, res) {
             access: 'public',
             contentType: 'application/json',
             allowOverwrite: true,
-            token,
+            token: process.env.BLOB_READ_WRITE_TOKEN,
         });
     }
 
     if (req.method === 'GET') {
         try {
             const posts = await loadPosts();
-            res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
             return res.status(200).json({ posts });
         } catch (err) {
             console.error('GET error:', err.message);
