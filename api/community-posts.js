@@ -1,4 +1,4 @@
-const { put, list } = require('@vercel/blob');
+const { put, list, head } = require('@vercel/blob');
 
 module.exports = async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -11,9 +11,14 @@ module.exports = async function handler(req, res) {
 
     async function loadPosts() {
         try {
-            const { blobs } = await list({ prefix: 'community/index.json', token: process.env.BLOB_READ_WRITE_TOKEN });
+            const { blobs } = await list({ 
+                prefix: 'community/index.json', 
+                token: process.env.BLOB_READ_WRITE_TOKEN 
+            });
             if (blobs.length === 0) return [];
-            const response = await fetch(blobs[0].url);
+            // Use head to get a fresh download URL, then fetch it
+            const freshBlob = await head(blobs[0].url, { token: process.env.BLOB_READ_WRITE_TOKEN });
+            const response = await fetch(freshBlob.downloadUrl);
             return await response.json();
         } catch (e) {
             console.error('loadPosts error:', e);
@@ -23,7 +28,7 @@ module.exports = async function handler(req, res) {
 
     async function savePosts(posts) {
         await put('community/index.json', JSON.stringify(posts), {
-            access: 'public',
+            access: 'private',
             contentType: 'application/json',
             allowOverwrite: true,
             token: process.env.BLOB_READ_WRITE_TOKEN,
@@ -33,6 +38,7 @@ module.exports = async function handler(req, res) {
     if (req.method === 'GET') {
         try {
             const posts = await loadPosts();
+            // Strip photo data for the list — photos are fetched separately
             return res.status(200).json({ posts });
         } catch (err) {
             console.error('GET error:', err);
@@ -48,35 +54,19 @@ module.exports = async function handler(req, res) {
                 return res.status(400).json({ error: 'Name and comment are required' });
             }
 
-            let photoUrl = null;
-
+            // Store photo as base64 directly in the post — no separate file needed
+            let photoData = null;
             if (photo) {
                 const matches = photo.match(/^data:(.+);base64,(.+)$/);
-                if (!matches) {
-                    return res.status(400).json({ error: 'Invalid photo format' });
-                }
-                const mimeType = matches[1];
-                const base64Data = matches[2];
-
-                if (base64Data.length > 2000000) {
+                if (matches && matches[2].length <= 2000000) {
+                    photoData = photo; // keep as base64 data URL
+                } else if (photo.length > 2000000) {
                     return res.status(400).json({ error: 'Photo too large. Please use a smaller image.' });
                 }
-
-                const buffer = Buffer.from(base64Data, 'base64');
-                const ext = mimeType.split('/')[1] || 'jpg';
-                const filename = `community/photos/${Date.now()}.${ext}`;
-
-                const blob = await put(filename, buffer, {
-                    access: 'public',
-                    contentType: mimeType,
-                    token: process.env.BLOB_READ_WRITE_TOKEN,
-                });
-
-                photoUrl = blob.url;
             }
 
             const posts = await loadPosts();
-            posts.unshift({ name, text, photo: photoUrl, date });
+            posts.unshift({ name, text, photo: photoData, date });
             if (posts.length > 50) posts.length = 50;
             await savePosts(posts);
 
