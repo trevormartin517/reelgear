@@ -171,7 +171,7 @@
             { id: 7, name: 'Garmin 73SV/CV', price: 14.99, desc: 'Compact sun shade' },
             { id: 8, name: 'Treble Hook Covers', price: 5.99, desc: 'Various Sizes Available', sizes: ['1/0', '2/0', '3/0', '4/0', '5/0'] },
             { id: 9, name: 'Stake Rod Holder', price: 14.99, desc: 'Fishing Rod Stand' },
-            { id: 10, name: 'Mountable Rod Holder', price: 19.99, desc: 'Mountable rod holder for boat or dock' }
+            { id: 10, name: 'Mountable Rod Holder', price: 11.99, desc: 'Mountable rod holder for boat or dock - 2 pack' }
         ];
 
         var cart = [];
@@ -390,9 +390,24 @@
                 }
             }
             var name = 'Mountable Rod Holder - ' + selectedColor;
-            cart.push({ id: 10, name: name, price: 19.99 });
+            cart.push({ id: 10, name: name, price: 11.99, qty: 2 });
             updateCartCount();
-            alert(name + ' added to cart!');
+            alert(name + ' (Qty: 2) added to cart!');
+        }
+
+        function addMountRodFeaturedToCart() {
+            var colorRadios = document.getElementsByName('mountrod-featured-color');
+            var selectedColor = 'Standard';
+            for (var i = 0; i < colorRadios.length; i++) {
+                if (colorRadios[i].checked) {
+                    selectedColor = colorRadios[i].value.charAt(0).toUpperCase() + colorRadios[i].value.slice(1);
+                    break;
+                }
+            }
+            var name = 'Mountable Rod Holder - ' + selectedColor;
+            cart.push({ id: 10, name: name, price: 11.99, qty: 2 });
+            updateCartCount();
+            alert(name + ' (Qty: 2) added to cart!');
         }
 
         function changeStakeColor(imgId, color) {
@@ -449,7 +464,7 @@
             for (var i = 0; i < cart.length; i++) {
                 var item = cart[i];
                 subtotal += item.price;
-                html += '<div class="comment-box" style="border-left-color: #C9933A;"><strong>' + item.name + '</strong> - $' + item.price.toFixed(2) + ' <button onclick="removeFromCart(' + i + ')" style="float: right; background: #e74c3c; padding: 5px 10px; font-size: 12px;">Remove</button></div>';
+                html += '<div class="comment-box" style="border-left-color: #C9933A;"><strong>' + item.name + '</strong>' + (item.qty ? ' (Qty: ' + item.qty + ')' : '') + ' - $' + item.price.toFixed(2) + ' <button onclick="removeFromCart(' + i + ')" style="float: right; background: #e74c3c; padding: 5px 10px; font-size: 12px;">Remove</button></div>';
             }
             
             var shipping = subtotal >= 60 ? 0 : 9.95;
