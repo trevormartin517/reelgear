@@ -2,7 +2,8 @@ const { Resend } = require('resend');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const merchantEmails = ['salesandsupport@reelgearco.com'];
+const primaryEmail = 'salesandsupport@reelgearco.com';
+const fulfillmentEmail = 'Bearlovesdolly@yahoo.com';
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -45,7 +46,7 @@ Order submission at: ${new Date().toLocaleString()}
 
       await resend.emails.send({
         from: 'Reel Gear Co <salesandsupport@reelgearco.com>',
-        to: merchantEmails,
+        to: [primaryEmail],
         subject: `🎣 Order Submission from ${customerName}`,
         text: merchantEmailBody,
       });
@@ -74,13 +75,15 @@ Total: $${total.toFixed(2)}
 Order received at: ${new Date().toLocaleString()}
       `;
 
+      // Send to both salesandsupport and fulfillment
       await resend.emails.send({
         from: 'Reel Gear Co <salesandsupport@reelgearco.com>',
-        to: merchantEmails,
-        subject: `🎣 New Order from ${customerName}`,
+        to: [primaryEmail, fulfillmentEmail],
+        subject: `🎣 New Order from ${customerName} - SHIP THIS ORDER`,
         text: merchantEmailBody,
       });
 
+      // Send confirmation to customer
       const customerEmailBody = `
 Thank you for your order, ${customerName}!
 
@@ -128,7 +131,7 @@ Please follow up with customer if needed.
 
       await resend.emails.send({
         from: 'Reel Gear Co <salesandsupport@reelgearco.com>',
-        to: merchantEmails,
+        to: [primaryEmail],
         subject: `⚠️ Payment Failed - ${customerName}`,
         text: failedEmailBody,
       });
