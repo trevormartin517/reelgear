@@ -1,4 +1,4 @@
-const { put, list, head } = require('@vercel/blob');
+const { put, list } = require('@vercel/blob');
 
 module.exports = async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -16,9 +16,7 @@ module.exports = async function handler(req, res) {
                 token: process.env.BLOB_READ_WRITE_TOKEN 
             });
             if (blobs.length === 0) return [];
-            // Use head to get a fresh download URL, then fetch it
-            const freshBlob = await head(blobs[0].url, { token: process.env.BLOB_READ_WRITE_TOKEN });
-            const response = await fetch(freshBlob.downloadUrl);
+            const response = await fetch(blobs[0].url);
             return await response.json();
         } catch (e) {
             console.error('loadPosts error:', e);
@@ -28,7 +26,7 @@ module.exports = async function handler(req, res) {
 
     async function savePosts(posts) {
         await put('community/index.json', JSON.stringify(posts), {
-            access: 'private',
+            access: 'public',
             contentType: 'application/json',
             allowOverwrite: true,
             token: process.env.BLOB_READ_WRITE_TOKEN,
@@ -38,7 +36,6 @@ module.exports = async function handler(req, res) {
     if (req.method === 'GET') {
         try {
             const posts = await loadPosts();
-            // Strip photo data for the list — photos are fetched separately
             return res.status(200).json({ posts });
         } catch (err) {
             console.error('GET error:', err);
@@ -54,12 +51,11 @@ module.exports = async function handler(req, res) {
                 return res.status(400).json({ error: 'Name and comment are required' });
             }
 
-            // Store photo as base64 directly in the post — no separate file needed
             let photoData = null;
             if (photo) {
                 const matches = photo.match(/^data:(.+);base64,(.+)$/);
                 if (matches && matches[2].length <= 2000000) {
-                    photoData = photo; // keep as base64 data URL
+                    photoData = photo;
                 } else if (photo.length > 2000000) {
                     return res.status(400).json({ error: 'Photo too large. Please use a smaller image.' });
                 }
