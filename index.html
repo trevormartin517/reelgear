@@ -301,6 +301,13 @@
         </div>
     </div>
 
+    <div id="product-detail" class="page">
+        <div class="container">
+            <button onclick="showPage('products')" style="background:#174B8A; margin-bottom:20px;">← Back to Gear</button>
+            <div id="product-detail-content"></div>
+        </div>
+    </div>
+
     <div id="cart" class="page">
         <div class="container">
             <h1>Shopping Cart</h1>
@@ -386,16 +393,16 @@
 
     <script>
         var products = [
-            { id: 1, name: 'Garmin Striker 4', price: 19.99, desc: 'Premium sun shade' },
-            { id: 2, name: 'Garmin Striker 4 Plus', price: 21.99, desc: 'Scaled up version' },
-            { id: 3, name: 'Garmin Echomap 93SV', price: 19.99, desc: 'Advanced fish finder' },
-            { id: 4, name: 'Garmin Echomap 106SV', price: 29.99, desc: 'Wide screen shade' },
-            { id: 5, name: 'Garmin Echomap 126SV', price: 32.99, desc: 'Premium shade' },
-            { id: 6, name: 'Garmin GPSMAP 1022', price: 29.99, desc: 'Professional grade' },
-            { id: 7, name: 'Garmin 73SV/CV', price: 14.99, desc: 'Compact sun shade' },
-            { id: 8, name: 'Treble Hook Covers', price: 5.99, desc: 'Various Sizes Available', sizes: ['1/0', '2/0', '3/0', '4/0', '5/0'] },
-            { id: 9, name: 'Stake Rod Holder', price: 14.99, desc: 'Fishing Rod Stand' },
-            { id: 10, name: 'Mountable Rod Holder', price: 11.99, desc: 'Mountable rod holder for boat or dock - 2 pack' }
+            { id: 1, name: 'Garmin Striker 4', price: 19.99, desc: 'Premium sun shade', detail: 'Custom 3D printed sun shade precision-fit for the Garmin Striker 4 fish finder. Reduces glare and dramatically improves screen visibility in direct sunlight. Printed in durable PETG plastic that holds up in heat and UV exposure on the water.', images: ['/Striker4.jpeg'] },
+            { id: 2, name: 'Garmin Striker 4 Plus', price: 21.99, desc: 'Scaled up version', detail: 'Custom 3D printed sun shade for the Garmin Striker 4 Plus. Same precision fit as the Striker 4 shade, scaled to the Plus screen dimensions. Keeps your display readable on the brightest days out on the water.', images: ['/Striker4.jpeg'] },
+            { id: 3, name: 'Garmin Echomap 93SV', price: 19.99, desc: 'Advanced fish finder', detail: 'Precision-fit 3D printed sun shade for the Garmin Echomap 93SV. Eliminates screen glare so you can read your sonar clearly even in direct sunlight. Available in black and white to match your boat setup.', images: ['/Garmin93SVblack.jpg', '/Garmin93SVwhite.jpeg'] },
+            { id: 4, name: 'Garmin Echomap 106SV', price: 29.99, desc: 'Wide screen shade', detail: 'Wide-format sun shade designed specifically for the Garmin Echomap 106SV. Built to cover the larger screen profile without blocking buttons or controls. Available in black and white.', images: ['/Garmin93SVblack.jpg', '/Garmin93SVwhite.jpeg'] },
+            { id: 5, name: 'Garmin Echomap 126SV', price: 32.99, desc: 'Premium shade', detail: 'Our largest sun shade, purpose-built for the Garmin Echomap 126SV premium fish finder. Keeps the big screen visible in any light condition. Durable PETG construction built to last season after season.', images: [] },
+            { id: 6, name: 'Garmin GPSMAP 1022', price: 29.99, desc: 'Professional grade', detail: 'Heavy-duty sun shade for the Garmin GPSMAP 1022 chartplotter. Built for serious boaters who need maximum screen clarity at all times. Precision fit with no modifications required. Available in black and white.', images: ['/Garmin1022Black.JPG', '/Garmin1022white.jpeg'] },
+            { id: 7, name: 'Garmin 73SV/CV', price: 14.99, desc: 'Compact sun shade', detail: 'Compact and lightweight sun shade for the Garmin 73SV and 73CV. Perfect for kayak anglers and small boat setups where weight and size matter. Available in black, blue, and white.', images: ['/Garmin73SVblack.jpeg', '/Garmin73SVblue.jpg', '/Garmin73SVwhite.jpg'] },
+            { id: 8, name: 'Treble Hook Covers', price: 5.99, desc: 'Various Sizes Available', sizes: ['1/0', '2/0', '3/0', '4/0', '5/0'], detail: '3D printed treble hook covers to protect your hooks — and your hands — during storage and transport. Comes 16 per order. Available in sizes 1/0 through 5/0. Great for tackle boxes, bags, and lure storage.', images: ['/Blkpurplehookcover.JPG', '/Blkpurplehookcover4.JPG', '/Blkpurplehookcover3.JPG', '/Hookcoverpole.jpg', '/Hookcoverpole2.jpg'] },
+            { id: 9, name: 'Stake Rod Holder', price: 14.99, desc: 'Fishing Rod Stand', detail: 'Push-in stake rod holder that sticks into the ground to hold your rod completely hands-free. Great for bank fishing, shore fishing, or anywhere you need to set your rod down without losing it. Available in green, white, and as a dual pack ($24.99).', images: ['/Greenstakefront.jpg', '/Whitestake.jpg', '/Orangestackdual.jpg'] },
+            { id: 10, name: 'Mountable Rod Holder', price: 11.99, desc: 'Mountable rod holder for boat or dock - 2 pack', detail: '3D printed mountable rod holder, comes as a 2 pack. Mounts to your boat gunnel, dock, kayak, or any flat surface. Lightweight but strong — holds your rod securely while you navigate or take a break. Available in gold, silver, and blue.', images: ['/Multirodholder.jpg', '/Goldrodholder.jpg', '/Silverrodholder.jpg', '/Bluerodholder.jpg'] }
         ];
 
         var cart = [];
@@ -481,6 +488,104 @@
             }, 100);
         }
 
+        function showProductDetail(id) {
+            var p = null;
+            for (var i = 0; i < products.length; i++) {
+                if (products[i].id == id) { p = products[i]; break; }
+            }
+            if (!p) return;
+
+            var imagesHtml = '';
+            if (p.images && p.images.length > 0) {
+                // Hero image
+                imagesHtml += '<div style="position:relative; margin-bottom:12px;">';
+                imagesHtml += '<img id="detail-hero-img" src="' + p.images[0] + '" style="width:100%; height:300px; object-fit:contain; background:#174B8A; border-radius:10px;">';
+                imagesHtml += '</div>';
+                // Swipeable thumbnail strip (only show if more than 1 image)
+                if (p.images.length > 1) {
+                    imagesHtml += '<div id="detail-thumb-strip" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:8px; margin-bottom:20px; -webkit-overflow-scrolling:touch; scrollbar-width:none;">';
+                    for (var j = 0; j < p.images.length; j++) {
+                        var border = j === 0 ? 'border:2px solid #C9933A;' : 'border:2px solid transparent;';
+                        imagesHtml += '<img src="' + p.images[j] + '" onclick="selectDetailImage(this, \'' + p.images[j] + '\')" style="width:70px; height:70px; object-fit:contain; background:#174B8A; border-radius:6px; cursor:pointer; flex-shrink:0; ' + border + '">';
+                    }
+                    imagesHtml += '</div>';
+                } else {
+                    imagesHtml += '<div style="margin-bottom:20px;"></div>';
+                }
+            } else {
+                imagesHtml = '<div style="width:100%; height:300px; background:#174B8A; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:64px; margin-bottom:24px;">🎣</div>';
+            }
+
+            var addBtn = '';
+            if (p.id === 8) {
+                addBtn = '<div style="margin:16px 0;"><select id="detail-hookcover-size" style="padding:10px; width:100%; max-width:200px; border-radius:5px; border:1px solid #ccc; margin-bottom:12px;"><option value="">Select Size</option><option value="1/0">1/0</option><option value="2/0">2/0</option><option value="3/0">3/0</option><option value="4/0">4/0</option><option value="5/0">5/0</option></select><p style="font-size:13px; color:#666; margin-bottom:12px;">16 per order</p></div><button onclick="addHookCoversDetailToCart()">Add to Cart</button>';
+            } else if (p.id === 9) {
+                addBtn = '<div style="margin:16px 0;"><div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:12px;"><label><input type="radio" name="detail-stake-color" value="green" checked onchange="updateDetailStakePrice()"> Green — $14.99</label><label><input type="radio" name="detail-stake-color" value="white" onchange="updateDetailStakePrice()"> White — $14.99</label><label><input type="radio" name="detail-stake-color" value="dual" onchange="updateDetailStakePrice()"> Dual Pack — $24.99</label></div></div><button onclick="addStakeDetailToCart()">Add to Cart</button>';
+            } else if (p.id === 10) {
+                addBtn = '<div style="margin:16px 0;"><div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:12px;"><label><input type="radio" name="detail-mountrod-color" value="gold"> Gold</label><label><input type="radio" name="detail-mountrod-color" value="silver"> Silver</label><label><input type="radio" name="detail-mountrod-color" value="blue"> Blue</label></div></div><button onclick="addMountRodDetailToCart()">Add to Cart</button>';
+            } else {
+                addBtn = '<button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button>';
+            }
+
+            var content = '<h1 style="margin-bottom:8px; color:#061827;">' + p.name + '</h1>';
+            content += '<div style="font-size:28px; color:#C9933A; font-weight:bold; margin-bottom:20px;">$' + p.price.toFixed(2) + '</div>';
+            content += imagesHtml;
+            content += '<p style="font-size:16px; line-height:1.8; color:#444; margin-bottom:28px; max-width:680px;">' + p.detail + '</p>';
+            content += addBtn;
+
+            document.getElementById('product-detail-content').innerHTML = content;
+
+            var pages = document.querySelectorAll('.page');
+            for (var i = 0; i < pages.length; i++) { pages[i].classList.remove('active'); }
+            document.getElementById('product-detail').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function selectDetailImage(thumbEl, src) {
+            document.getElementById('detail-hero-img').src = src;
+            var thumbs = document.querySelectorAll('#detail-thumb-strip img');
+            for (var i = 0; i < thumbs.length; i++) {
+                thumbs[i].style.border = '2px solid transparent';
+            }
+            thumbEl.style.border = '2px solid #C9933A';
+        }
+
+        function addHookCoversDetailToCart() {
+            var sizeSelect = document.getElementById('detail-hookcover-size');
+            var size = sizeSelect.value;
+            if (!size) { alert('Please select a size'); return; }
+            cart.push({ id: 8, name: 'Treble Hook Covers - ' + size, price: 5.99, qty: 16 });
+            updateCartCount();
+            alert('Added to cart: 16 Hook Covers (Size ' + size + ')');
+            sizeSelect.value = '';
+        }
+
+        function addStakeDetailToCart() {
+            var colorRadios = document.getElementsByName('detail-stake-color');
+            var selectedColor = 'green';
+            for (var i = 0; i < colorRadios.length; i++) {
+                if (colorRadios[i].checked) { selectedColor = colorRadios[i].value; break; }
+            }
+            var name = 'Stake Rod Holder - ' + selectedColor.charAt(0).toUpperCase() + selectedColor.slice(1);
+            var price = selectedColor === 'dual' ? 24.99 : 14.99;
+            cart.push({ id: 9, name: name, price: price });
+            updateCartCount();
+            alert(name + ' added to cart!');
+        }
+
+        function addMountRodDetailToCart() {
+            var colorRadios = document.getElementsByName('detail-mountrod-color');
+            var selectedColor = '';
+            for (var i = 0; i < colorRadios.length; i++) {
+                if (colorRadios[i].checked) { selectedColor = colorRadios[i].value; break; }
+            }
+            if (!selectedColor) { alert('Please select a color'); return; }
+            var name = 'Mountable Rod Holder - ' + selectedColor.charAt(0).toUpperCase() + selectedColor.slice(1);
+            cart.push({ id: 10, name: name, price: 11.99, qty: 2 });
+            updateCartCount();
+            alert(name + ' (Qty: 2) added to cart!');
+        }
+
         function changeFeaturedColor(imgId, color) {
             var img = document.getElementById(imgId);
             if (img) {
@@ -524,19 +629,19 @@
                     imageHtml = '<img id="garmin73-img" src="/Garmin73SVblack.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
                     colorSelector = '<div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="garmin73-color" value="black" checked onchange="changeColor(\'garmin73-img\', \'black\', \'garmin73\')"> Black</label><label style="margin-right: 10px;"><input type="radio" name="garmin73-color" value="blue" onchange="changeColor(\'garmin73-img\', \'blue\', \'garmin73\')"> Blue</label><label><input type="radio" name="garmin73-color" value="white" onchange="changeColor(\'garmin73-img\', \'white\', \'garmin73\')"> White</label></div>';
                 } else if (p.id === 8) {
-                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image"><img id="hookcover-img" src="/Blkpurplehookcover.JPG" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px;"><img src="/Blkpurplehookcover.JPG" onclick="changeHookImg(\'/Blkpurplehookcover.JPG\')" style="width: 50px; height: 50px; cursor: pointer; border: 2px solid gold;"><img src="/Blkpurplehookcover4.JPG" onclick="changeHookImg(\'/Blkpurplehookcover4.JPG\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Blkpurplehookcover3.JPG" onclick="changeHookImg(\'/Blkpurplehookcover3.JPG\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Hookcoverpole.jpg" onclick="changeHookImg(\'/Hookcoverpole.jpg\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Hookcoverpole2.jpg" onclick="changeHookImg(\'/Hookcoverpole2.jpg\')" style="width: 50px; height: 50px; cursor: pointer;"></div><h3 class="product-name">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><div style="margin: 10px 0;"><select id="hookcover-size" style="padding: 8px; width: 100%; border-radius: 5px; border: 1px solid #ccc;"><option value="">Select Size</option><option value="1/0">1/0</option><option value="2/0">2/0</option><option value="3/0">3/0</option><option value="4/0">4/0</option><option value="5/0">5/0</option></select></div><p style="font-size: 12px; color: #666;">16 per order</p><button onclick="addHookCoversToCart()">Add to Cart</button></div>';
+                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer;"><img id="hookcover-img" src="/Blkpurplehookcover.JPG" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px;"><img src="/Blkpurplehookcover.JPG" onclick="changeHookImg(\'/Blkpurplehookcover.JPG\')" style="width: 50px; height: 50px; cursor: pointer; border: 2px solid gold;"><img src="/Blkpurplehookcover4.JPG" onclick="changeHookImg(\'/Blkpurplehookcover4.JPG\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Blkpurplehookcover3.JPG" onclick="changeHookImg(\'/Blkpurplehookcover3.JPG\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Hookcoverpole.jpg" onclick="changeHookImg(\'/Hookcoverpole.jpg\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Hookcoverpole2.jpg" onclick="changeHookImg(\'/Hookcoverpole2.jpg\')" style="width: 50px; height: 50px; cursor: pointer;"></div><h3 class="product-name" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer; text-decoration:underline dotted #aaa;">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><div style="margin: 10px 0;"><select id="hookcover-size" style="padding: 8px; width: 100%; border-radius: 5px; border: 1px solid #ccc;"><option value="">Select Size</option><option value="1/0">1/0</option><option value="2/0">2/0</option><option value="3/0">3/0</option><option value="4/0">4/0</option><option value="5/0">5/0</option></select></div><p style="font-size: 12px; color: #666;">16 per order</p><button onclick="addHookCoversToCart()">Add to Cart</button></div>';
                     continue;
                 } else if (p.id === 9) {
-                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image"><img id="stake-img" src="/Greenstakefront.jpg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><h3 class="product-name">' + p.name + '</h3><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="stake-color" value="green" checked onchange="changeStakeColor(\'stake-img\', \'green\'); updateStakePrice(\'green\')"> Green</label><label style="margin-right: 10px;"><input type="radio" name="stake-color" value="white" onchange="changeStakeColor(\'stake-img\', \'white\'); updateStakePrice(\'white\')"> White</label><label><input type="radio" name="stake-color" value="dual" onchange="changeStakeColor(\'stake-img\', \'dual\'); updateStakePrice(\'dual\')"> Dual Pack</label></div><div id="stake-price" class="product-price">$14.99</div><p class="product-desc">' + p.desc + '</p><button onclick="addStakeToCart()">Add to Cart</button></div>';
+                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer;"><img id="stake-img" src="/Greenstakefront.jpg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><h3 class="product-name" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer; text-decoration:underline dotted #aaa;">' + p.name + '</h3><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="stake-color" value="green" checked onchange="changeStakeColor(\'stake-img\', \'green\'); updateStakePrice(\'green\')"> Green</label><label style="margin-right: 10px;"><input type="radio" name="stake-color" value="white" onchange="changeStakeColor(\'stake-img\', \'white\'); updateStakePrice(\'white\')"> White</label><label><input type="radio" name="stake-color" value="dual" onchange="changeStakeColor(\'stake-img\', \'dual\'); updateStakePrice(\'dual\')"> Dual Pack</label></div><div id="stake-price" class="product-price">$14.99</div><p class="product-desc">' + p.desc + '</p><button onclick="addStakeToCart()">Add to Cart</button></div>';
                     continue;
                 } else if (p.id === 10) {
-                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image"><img id="mountrod-img" src="/Multirodholder.jpg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><h3 class="product-name">' + p.name + '</h3><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="mountrod-color" value="gold" onchange="changeMountRodColor(\'gold\')"> Gold</label><label style="margin-right: 10px;"><input type="radio" name="mountrod-color" value="silver" onchange="changeMountRodColor(\'silver\')"> Silver</label><label><input type="radio" name="mountrod-color" value="blue" onchange="changeMountRodColor(\'blue\')"> Blue</label></div><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addMountRodToCart()">Add to Cart</button></div>';
+                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer;"><img id="mountrod-img" src="/Multirodholder.jpg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><h3 class="product-name" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer; text-decoration:underline dotted #aaa;">' + p.name + '</h3><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="mountrod-color" value="gold" onchange="changeMountRodColor(\'gold\')"> Gold</label><label style="margin-right: 10px;"><input type="radio" name="mountrod-color" value="silver" onchange="changeMountRodColor(\'silver\')"> Silver</label><label><input type="radio" name="mountrod-color" value="blue" onchange="changeMountRodColor(\'blue\')"> Blue</label></div><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addMountRodToCart()">Add to Cart</button></div>';
                     continue;
                 } else {
                     imageHtml = '🎣';
                 }
                 
-                html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image">' + imageHtml + '</div><h3 class="product-name">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button></div>';
+                html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer;">' + imageHtml + '</div><h3 class="product-name" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer; text-decoration:underline dotted #aaa;">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button></div>';
             }
             container.innerHTML = html;
         }
