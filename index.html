@@ -603,10 +603,11 @@
             var basePrice = 5.99;
             var disc = itemDiscount(qty);
             var unitPrice = parseFloat((basePrice * (1 - disc)).toFixed(2));
-            cart.push({ id: 8, name: 'Treble Hook Covers - ' + size, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 16 });
+            var newQty = mergeIntoCart({ id: 8, name: 'Treble Hook Covers - ' + size, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 16 });
             updateCartCount();
-            var msg = 'Added ' + qty + ' pack(s) of 16 Hook Covers (Size ' + size + ')!';
-            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-pack discount applied!';
+            var finalDisc = itemDiscount(newQty);
+            var msg = 'Hook Covers (' + size + ') added! Cart qty: ' + newQty + ' pack(s)';
+            if (finalDisc > 0) msg += ' (' + Math.round(finalDisc * 100) + '% discount applied)';
             alert(msg);
             sizeSelect.value = '';
         }
@@ -622,10 +623,11 @@
             var qty = getQty('qty-stake-detail');
             var disc = itemDiscount(qty);
             var unitPrice = parseFloat((basePrice * (1 - disc)).toFixed(2));
-            cart.push({ id: 9, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc });
+            var newQty = mergeIntoCart({ id: 9, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc });
             updateCartCount();
-            var msg = name + ' (Qty: ' + qty + ') added to cart!';
-            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-unit discount applied!';
+            var finalDisc = itemDiscount(newQty);
+            var msg = name + ' added! Cart qty: ' + newQty;
+            if (finalDisc > 0) msg += ' (' + Math.round(finalDisc * 100) + '% discount applied)';
             alert(msg);
         }
 
@@ -641,10 +643,11 @@
             var qty = getQty('qty-mountrod-detail');
             var disc = itemDiscount(qty);
             var unitPrice = parseFloat((basePrice * (1 - disc)).toFixed(2));
-            cart.push({ id: 10, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 2 });
+            var newQty = mergeIntoCart({ id: 10, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 2 });
             updateCartCount();
-            var msg = name + ' (Qty: ' + qty + ' × 2-pack) added to cart!';
-            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-unit discount applied!';
+            var finalDisc = itemDiscount(newQty);
+            var msg = name + ' added! Cart qty: ' + newQty;
+            if (finalDisc > 0) msg += ' (' + Math.round(finalDisc * 100) + '% discount applied)';
             alert(msg);
         }
 
@@ -757,14 +760,32 @@
             return Math.min((qty - 1) * 0.10, 0.90);
         }
 
+        // Merge qty into existing cart line with same name, or push new entry. Returns final qty.
+        function mergeIntoCart(item) {
+            var existing = null;
+            for (var i = 0; i < cart.length; i++) {
+                if (cart[i].name === item.name) { existing = cart[i]; break; }
+            }
+            if (existing) {
+                existing.qty = Math.min(10, existing.qty + item.qty);
+                existing.discount = itemDiscount(existing.qty);
+                existing.unitPrice = parseFloat((existing.price * (1 - existing.discount)).toFixed(2));
+                return existing.qty;
+            } else {
+                cart.push(item);
+                return item.qty;
+            }
+        }
+
         function addToCart(id, name, price, qtyInputId) {
             var qty = qtyInputId ? getQty(qtyInputId) : 1;
             var disc = itemDiscount(qty);
             var unitPrice = parseFloat((price * (1 - disc)).toFixed(2));
-            cart.push({ id: id, name: name, price: price, qty: qty, unitPrice: unitPrice, discount: disc });
+            var newQty = mergeIntoCart({ id: id, name: name, price: price, qty: qty, unitPrice: unitPrice, discount: disc });
             updateCartCount();
-            var msg = name + ' (Qty: ' + qty + ') added to cart!';
-            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-unit discount applied!';
+            var finalDisc = itemDiscount(newQty);
+            var msg = name + ' added! Cart qty: ' + newQty;
+            if (finalDisc > 0) msg += ' (' + Math.round(finalDisc * 100) + '% multi-unit discount applied)';
             alert(msg);
         }
 
@@ -781,10 +802,11 @@
             var basePrice = 5.99;
             var disc = itemDiscount(qty);
             var unitPrice = parseFloat((basePrice * (1 - disc)).toFixed(2));
-            cart.push({ id: 8, name: 'Treble Hook Covers - ' + size, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 16 });
+            var newQty = mergeIntoCart({ id: 8, name: 'Treble Hook Covers - ' + size, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 16 });
             updateCartCount();
-            var msg = 'Added ' + qty + ' pack(s) of 16 Hook Covers (Size ' + size + ')!';
-            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-pack discount applied!';
+            var finalDisc = itemDiscount(newQty);
+            var msg = 'Hook Covers (' + size + ') added! Cart qty: ' + newQty + ' pack(s)';
+            if (finalDisc > 0) msg += ' (' + Math.round(finalDisc * 100) + '% discount applied)';
             alert(msg);
             sizeSelect.value = '';
         }
@@ -818,10 +840,11 @@
             var qty = getQty('qty-mountrod');
             var disc = itemDiscount(qty);
             var unitPrice = parseFloat((basePrice * (1 - disc)).toFixed(2));
-            cart.push({ id: 10, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 2 });
+            var newQty = mergeIntoCart({ id: 10, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 2 });
             updateCartCount();
-            var msg = name + ' (Qty: ' + qty + ' × 2-pack) added to cart!';
-            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-unit discount applied!';
+            var finalDisc = itemDiscount(newQty);
+            var msg = name + ' added! Cart qty: ' + newQty;
+            if (finalDisc > 0) msg += ' (' + Math.round(finalDisc * 100) + '% discount applied)';
             alert(msg);
         }
 
@@ -836,10 +859,11 @@
             var qty = getQty('qty-mountrod-featured');
             var disc = itemDiscount(qty);
             var unitPrice = parseFloat((basePrice * (1 - disc)).toFixed(2));
-            cart.push({ id: 10, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 2 });
+            var newQty = mergeIntoCart({ id: 10, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 2 });
             updateCartCount();
-            var msg = name + ' (Qty: ' + qty + ' × 2-pack) added to cart!';
-            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-unit discount applied!';
+            var finalDisc = itemDiscount(newQty);
+            var msg = name + ' added! Cart qty: ' + newQty;
+            if (finalDisc > 0) msg += ' (' + Math.round(finalDisc * 100) + '% discount applied)';
             alert(msg);
         }
 
@@ -876,15 +900,18 @@
             var qty = getQty('qty-stake');
             var disc = itemDiscount(qty);
             var unitPrice = parseFloat((basePrice * (1 - disc)).toFixed(2));
-            cart.push({ id: 9, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc });
+            var newQty = mergeIntoCart({ id: 9, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc });
             updateCartCount();
-            var msg = name + ' (Qty: ' + qty + ') added to cart!';
-            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-unit discount applied!';
+            var finalDisc = itemDiscount(newQty);
+            var msg = name + ' added! Cart qty: ' + newQty;
+            if (finalDisc > 0) msg += ' (' + Math.round(finalDisc * 100) + '% discount applied)';
             alert(msg);
         }
 
         function updateCartCount() {
-            document.getElementById('cart-count').textContent = cart.length;
+            var total = 0;
+            for (var i = 0; i < cart.length; i++) total += (cart[i].qty || 1);
+            document.getElementById('cart-count').textContent = total;
         }
 
         function cartTotals() {
@@ -940,21 +967,43 @@
             var t = cartTotals();
             var shippingText = t.shipping === 0 ? '<span style="color:#27ae60;">FREE</span> <span style="font-size:12px; color:#27ae60;">(order over $60)</span>' : '$' + t.shipping.toFixed(2);
 
+            // Promo box
+            html += '<div class="order-breakdown" style="margin-bottom:12px;">';
+            html += '<div style="font-weight:bold; font-size:14px; margin-bottom:8px; color:#061827;">🎟 Have a Promo Code?</div>';
+            if (appliedPromo) {
+                html += '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">';
+                html += '<div style="flex:1; padding:10px; background:#fff8ee; border:1px solid #C9933A; border-radius:5px; font-size:13px; color:#C9933A; font-weight:bold;">✅ <strong>' + appliedPromo.code + '</strong> — ' + appliedPromo.description + '</div>';
+                html += '<button onclick="removeCartPromo()" style="background:#e74c3c; padding:8px 14px; font-size:13px; white-space:nowrap;">Remove</button>';
+                html += '</div>';
+            } else {
+                html += '<div style="display:flex; gap:8px;">';
+                html += '<input type="text" id="cart-promo-input" placeholder="ENTER CODE" style="flex:1; padding:10px; border:1px solid #ddd; border-radius:5px; font-size:14px; text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()">';
+                html += '<button onclick="applyCartPromo()" style="white-space:nowrap; padding:10px 16px;">Apply</button>';
+                html += '</div>';
+                html += '<div id="cart-promo-feedback" style="margin-top:6px; font-size:13px; font-weight:bold;"></div>';
+            }
+            html += '</div>';
+
+            // Order summary
             html += '<div class="order-breakdown">';
             html += '<div style="font-weight:bold; font-size:15px; margin-bottom:12px; color:#061827;">Order Summary</div>';
             html += '<div class="breakdown-row"><span>Items Subtotal</span><span>$' + t.subtotal.toFixed(2) + '</span></div>';
             if (t.totalDiscount > 0) {
                 html += '<div class="breakdown-row cart-discount-line"><span>🏷 Multi-Unit Discounts</span><span>−$' + t.totalDiscount.toFixed(2) + '</span></div>';
             }
+            if (t.promoDiscount > 0) {
+                html += '<div class="breakdown-row" style="color:#C9933A; font-weight:bold;"><span>🎟 Promo (' + appliedPromo.code + ')</span><span>−$' + t.promoDiscount.toFixed(2) + '</span></div>';
+            }
             html += '<div class="breakdown-row"><span>Shipping</span><span>' + shippingText + '</span></div>';
             html += '<div class="breakdown-row"><span>Tax (6%)</span><span>$' + t.tax.toFixed(2) + '</span></div>';
             html += '<div class="breakdown-row total-row"><span>Total</span><span>$' + t.total.toFixed(2) + '</span></div>';
-            if (t.totalDiscount > 0) {
-                html += '<div style="margin-top:10px; padding:8px; background:#eafaf1; border-radius:5px; text-align:center; font-size:13px; color:#27ae60; font-weight:bold;">🎉 You saved $' + t.totalDiscount.toFixed(2) + ' with multi-unit discounts!</div>';
+            var totalSaved = parseFloat((t.totalDiscount + t.promoDiscount).toFixed(2));
+            if (totalSaved > 0) {
+                html += '<div style="margin-top:10px; padding:8px; background:#eafaf1; border-radius:5px; text-align:center; font-size:13px; color:#27ae60; font-weight:bold;">🎉 You\'re saving $' + totalSaved.toFixed(2) + ' on this order!</div>';
             }
             if (t.shipping > 0) {
-                var needed = parseFloat((60 - t.subtotal).toFixed(2));
-                html += '<div style="margin-top:8px; text-align:center; font-size:12px; color:#C9933A;">Add $' + needed.toFixed(2) + ' more for FREE shipping!</div>';
+                var needed = parseFloat((60 - t.discountedSubtotal).toFixed(2));
+                if (needed > 0) html += '<div style="margin-top:8px; text-align:center; font-size:12px; color:#C9933A;">Add $' + needed.toFixed(2) + ' more for FREE shipping!</div>';
             }
             html += '</div>';
 
@@ -967,6 +1016,35 @@
             displayCart();
         }
 
+        function applyCartPromo() {
+            var input = document.getElementById('cart-promo-input');
+            var feedback = document.getElementById('cart-promo-feedback');
+            if (!input) return;
+            var code = input.value.trim().toUpperCase();
+            if (!code) {
+                feedback.style.color = '#e74c3c';
+                feedback.textContent = 'Please enter a promo code.';
+                return;
+            }
+            if (PROMO_CODES[code]) {
+                appliedPromo = Object.assign({}, PROMO_CODES[code], { code: code });
+                displayCart(); // re-render to show applied state + updated totals
+            } else {
+                feedback.style.color = '#e74c3c';
+                feedback.textContent = '❌ Invalid promo code. Please try again.';
+            }
+        }
+
+        function removeCartPromo() {
+            appliedPromo = null;
+            displayCart();
+        }
+
+        function removeCheckoutPromo() {
+            appliedPromo = null;
+            initializeCheckout();
+        }
+
         function applyPromoCode() {
             var code = document.getElementById('promoCodeInput').value.trim().toUpperCase();
             var feedback = document.getElementById('promo-feedback');
@@ -976,11 +1054,7 @@
                 return;
             }
             if (PROMO_CODES[code]) {
-                appliedPromo = PROMO_CODES[code];
-                appliedPromo.code = code;
-                feedback.style.color = '#27ae60';
-                feedback.textContent = '✅ Code applied: ' + appliedPromo.description;
-                document.getElementById('promoCodeInput').disabled = true;
+                appliedPromo = Object.assign({}, PROMO_CODES[code], { code: code });
                 initializeCheckout();
             } else {
                 appliedPromo = null;
@@ -1014,11 +1088,17 @@
             // Restore promo UI state
             var promoInput = document.getElementById('promoCodeInput');
             var promoFeedback = document.getElementById('promo-feedback');
-            if (appliedPromo && promoInput) {
-                promoInput.value = appliedPromo.code;
-                promoInput.disabled = true;
-                promoFeedback.style.color = '#27ae60';
-                promoFeedback.innerHTML = '✅ Code applied: ' + appliedPromo.description + ' &nbsp;<a href="#" onclick="removePromoCode(); return false;" style="font-size:12px; color:#e74c3c;">Remove</a>';
+            if (promoInput && promoFeedback) {
+                if (appliedPromo) {
+                    promoInput.value = appliedPromo.code;
+                    promoInput.disabled = true;
+                    promoFeedback.style.color = '#27ae60';
+                    promoFeedback.innerHTML = '✅ <strong>' + appliedPromo.code + '</strong> — ' + appliedPromo.description + ' &nbsp;<a href="#" onclick="removeCheckoutPromo(); return false;" style="font-size:12px; color:#e74c3c; font-weight:bold;">✕ Remove</a>';
+                } else {
+                    promoInput.value = '';
+                    promoInput.disabled = false;
+                    promoFeedback.textContent = '';
+                }
             }
 
             var t = cartTotals();
