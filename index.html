@@ -92,7 +92,7 @@
             "brand": { "@type": "Brand", "name": "ReelGearCo" },
             "offers": {
               "@type": "Offer",
-              "price": "29.99",
+              "price": "24.99",
               "priceCurrency": "USD",
               "availability": "https://schema.org/InStock",
               "seller": { "@type": "Organization", "name": "ReelGearCo" }
@@ -110,7 +110,7 @@
             "brand": { "@type": "Brand", "name": "ReelGearCo" },
             "offers": {
               "@type": "Offer",
-              "price": "32.99",
+              "price": "29.99",
               "priceCurrency": "USD",
               "availability": "https://schema.org/InStock",
               "seller": { "@type": "Organization", "name": "ReelGearCo" }
@@ -129,7 +129,7 @@
             "brand": { "@type": "Brand", "name": "ReelGearCo" },
             "offers": {
               "@type": "Offer",
-              "price": "29.99",
+              "price": "24.99",
               "priceCurrency": "USD",
               "availability": "https://schema.org/InStock",
               "seller": { "@type": "Organization", "name": "ReelGearCo" }
@@ -211,6 +211,24 @@
               "seller": { "@type": "Organization", "name": "ReelGearCo" }
             }
           }
+        },
+        {
+          "@type": "ListItem",
+          "position": 11,
+          "item": {
+            "@type": "Product",
+            "name": "Garmin Echomap 162SV Sun Shade",
+            "description": "Custom 3D printed sun shade for the Garmin Echomap 162SV large screen fish finder. Available in black and white.",
+            "url": "https://www.reelgearco.com",
+            "brand": { "@type": "Brand", "name": "ReelGearCo" },
+            "offers": {
+              "@type": "Offer",
+              "price": "39.99",
+              "priceCurrency": "USD",
+              "availability": "https://schema.org/InStock",
+              "seller": { "@type": "Organization", "name": "ReelGearCo" }
+            }
+          }
         }
       ]
     }
@@ -264,6 +282,17 @@
         .comment-box { background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #C9933A; }
         footer { background: #061827; color: white; text-align: center; padding: 20px; margin-top: 40px; }
         h2, h3 { color: #061827; margin-bottom: 20px; }
+        .qty-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+        .qty-row label { font-weight: bold; font-size: 14px; white-space: nowrap; }
+        .qty-selector { display: flex; align-items: center; gap: 0; border: 1px solid #ccc; border-radius: 5px; overflow: hidden; }
+        .qty-btn { background: #174B8A; color: white; border: none; width: 30px; height: 30px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
+        .qty-btn:hover { background: #C9933A; color: white; }
+        .qty-val { width: 36px; height: 30px; text-align: center; font-weight: bold; font-size: 15px; border: none; border-left: 1px solid #ccc; border-right: 1px solid #ccc; background: white; }
+        .qty-discount-badge { font-size: 12px; color: #27ae60; font-weight: bold; background: #eafaf1; border: 1px solid #27ae60; padding: 2px 7px; border-radius: 10px; }
+        .cart-discount-line { color: #27ae60; font-size: 13px; }
+        .order-breakdown { margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px; border: 1px solid #eee; }
+        .breakdown-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+        .breakdown-row.total-row { font-size: 18px; font-weight: bold; color: #C9933A; border-top: 2px solid #ddd; padding-top: 10px; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -351,6 +380,14 @@
                     <label>Card Details:</label>
                     <div id="card-element" style="border: 1px solid #ddd; padding: 10px; border-radius: 5px; background: white;"></div>
                 </div>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label>Promo Code:</label>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="text" id="promoCodeInput" placeholder="Enter code" style="flex:1; text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()">
+                        <button type="button" onclick="applyPromoCode()" style="white-space:nowrap; padding:10px 16px;">Apply</button>
+                    </div>
+                    <div id="promo-feedback" style="margin-top:8px; font-size:13px; font-weight:bold;"></div>
+                </div>
                 <div id="order-summary-container"></div>
                 <button type="submit" style="width: 100%; padding: 15px;">Complete Payment</button>
             </form>
@@ -396,18 +433,24 @@
             { id: 1, name: 'Garmin Striker 4', price: 19.99, desc: 'Premium sun shade', detail: 'Custom 3D printed sun shade precision-fit for the Garmin Striker 4 fish finder. Reduces glare and dramatically improves screen visibility in direct sunlight. Printed in durable PETG plastic that holds up in heat and UV exposure on the water.', images: ['/Striker4.jpeg'] },
             { id: 2, name: 'Garmin Striker 4 Plus', price: 21.99, desc: 'Scaled up version', detail: 'Custom 3D printed sun shade for the Garmin Striker 4 Plus. Same precision fit as the Striker 4 shade, scaled to the Plus screen dimensions. Keeps your display readable on the brightest days out on the water.', images: ['/Striker4.jpeg'] },
             { id: 3, name: 'Garmin Echomap 93SV', price: 19.99, desc: 'Advanced fish finder', detail: 'Precision-fit 3D printed sun shade for the Garmin Echomap 93SV. Eliminates screen glare so you can read your sonar clearly even in direct sunlight. Available in black and white to match your boat setup.', images: ['/Garmin93SVblack.jpg', '/Garmin93SVwhite.jpeg'] },
-            { id: 4, name: 'Garmin Echomap 106SV', price: 29.99, desc: 'Wide screen shade', detail: 'Wide-format sun shade designed specifically for the Garmin Echomap 106SV. Built to cover the larger screen profile without blocking buttons or controls. Available in black and white.', images: ['/Garmin93SVblack.jpg', '/Garmin93SVwhite.jpeg'] },
-            { id: 5, name: 'Garmin Echomap 126SV', price: 32.99, desc: 'Premium shade', detail: 'Our largest sun shade, purpose-built for the Garmin Echomap 126SV premium fish finder. Keeps the big screen visible in any light condition. Durable PETG construction built to last season after season.', images: [] },
-            { id: 6, name: 'Garmin GPSMAP 1022', price: 29.99, desc: 'Professional grade', detail: 'Heavy-duty sun shade for the Garmin GPSMAP 1022 chartplotter. Built for serious boaters who need maximum screen clarity at all times. Precision fit with no modifications required. Available in black and white.', images: ['/Garmin1022Black.JPG', '/Garmin1022white.jpeg'] },
+            { id: 4, name: 'Garmin Echomap 106SV', price: 24.99, desc: 'Wide screen shade', detail: 'Wide-format sun shade designed specifically for the Garmin Echomap 106SV. Built to cover the larger screen profile without blocking buttons or controls. Available in black and white.', images: ['/Garmin93SVblack.jpg', '/Garmin93SVwhite.jpeg'] },
+            { id: 5, name: 'Garmin Echomap 126SV', price: 29.99, desc: 'Premium shade', detail: 'Our largest sun shade, purpose-built for the Garmin Echomap 126SV premium fish finder. Keeps the big screen visible in any light condition. Durable PETG construction built to last season after season.', images: [] },
+            { id: 6, name: 'Garmin GPSMAP 1022', price: 24.99, desc: 'Professional grade', detail: 'Heavy-duty sun shade for the Garmin GPSMAP 1022 chartplotter. Built for serious boaters who need maximum screen clarity at all times. Precision fit with no modifications required. Available in black and white.', images: ['/Garmin1022Black.JPG', '/Garmin1022white.jpeg'] },
             { id: 7, name: 'Garmin 73SV/CV', price: 14.99, desc: 'Compact sun shade', detail: 'Compact and lightweight sun shade for the Garmin 73SV and 73CV. Perfect for kayak anglers and small boat setups where weight and size matter. Available in black, blue, and white.', images: ['/Garmin73SVblack.jpeg', '/Garmin73SVblue.jpg', '/Garmin73SVwhite.jpg'] },
             { id: 8, name: 'Treble Hook Covers', price: 5.99, desc: 'Various Sizes Available', sizes: ['1/0', '2/0', '3/0', '4/0', '5/0'], detail: '3D printed treble hook covers to protect your hooks — and your hands — during storage and transport. Comes 16 per order. Available in sizes 1/0 through 5/0. Great for tackle boxes, bags, and lure storage.', images: ['/Blkpurplehookcover.JPG', '/Blkpurplehookcover4.JPG', '/Blkpurplehookcover3.JPG', '/Hookcoverpole.jpg', '/Hookcoverpole2.jpg'] },
             { id: 9, name: 'Stake Rod Holder', price: 14.99, desc: 'Fishing Rod Stand', detail: 'Push-in stake rod holder that sticks into the ground to hold your rod completely hands-free. Great for bank fishing, shore fishing, or anywhere you need to set your rod down without losing it. Available in green, white, and as a dual pack ($24.99).', images: ['/Greenstakefront.jpg', '/Whitestake.jpg', '/Orangestackdual.jpg'] },
-            { id: 10, name: 'Mountable Rod Holder', price: 11.99, desc: 'Mountable rod holder for boat or dock - 2 pack', detail: '3D printed mountable rod holder, comes as a 2 pack. Mounts to your boat gunnel, dock, kayak, or any flat surface. Lightweight but strong — holds your rod securely while you navigate or take a break. Available in gold, silver, and blue.', images: ['/Multirodholder.jpg', '/Goldrodholder.jpg', '/Silverrodholder.jpg', '/Bluerodholder.jpg'] }
+            { id: 10, name: 'Mountable Rod Holder', price: 11.99, desc: 'Mountable rod holder for boat or dock - 2 pack', detail: '3D printed mountable rod holder, comes as a 2 pack. Mounts to your boat gunnel, dock, kayak, or any flat surface. Lightweight but strong — holds your rod securely while you navigate or take a break. Available in gold, silver, and blue.', images: ['/Multirodholder.jpg', '/Goldrodholder.jpg', '/Silverrodholder.jpg', '/Bluerodholder.jpg'] },
+            { id: 11, name: 'Garmin Echomap 162SV', price: 39.99, desc: 'XL screen shade', detail: 'Purpose-built sun shade for the Garmin Echomap 162SV large screen fish finder. Engineered for maximum glare reduction on the expansive display. Durable PETG construction that handles heat and UV exposure on the water. Available in black and white.', images: [] }
         ];
 
         var cart = [];
         var stripe = null;
         var cardElement = null;
+        var appliedPromo = null; // { code, label, discount } e.g. { code:'FRIEND20', label:'FRIEND20', discount:0.20 }
+
+        var PROMO_CODES = {
+            'FRIEND20': { label: 'FRIEND20', discount: 0.20, description: '20% off — Friends & Family' }
+        };
 
         function showPage(page) {
             var pages = document.querySelectorAll('.page');
@@ -458,12 +501,14 @@
                 var addBtn = '';
                 if (p.id === 10) {
                     addBtn = '<button onclick="event.stopPropagation(); addMountRodFeaturedToCart()">Add to Cart</button>';
+                    html += '<div class="product-card" style="cursor: pointer;"><div class="product-image">' + imageHtml + '</div><h3 class="product-name">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p>' + qtyHtml('qty-mountrod-featured') + addBtn + '</div>';
                 } else if (p.id === 9) {
                     addBtn = '<button onclick="event.stopPropagation(); addStakeToCart()">Add to Cart</button>';
+                    html += '<div class="product-card" style="cursor: pointer;"><div class="product-image">' + imageHtml + '</div><h3 class="product-name">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p>' + qtyHtml('qty-stake') + addBtn + '</div>';
                 } else {
-                    addBtn = '<button onclick="event.stopPropagation(); addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button>';
+                    addBtn = '<button onclick="event.stopPropagation(); addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ', \'qty-feat-' + p.id + '\')">Add to Cart</button>';
+                    html += '<div class="product-card" style="cursor: pointer;"><div class="product-image">' + imageHtml + '</div><h3 class="product-name">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p>' + qtyHtml('qty-feat-' + p.id) + addBtn + '</div>';
                 }
-                html += '<div class="product-card" style="cursor: pointer;"><div class="product-image">' + imageHtml + '</div><h3 class="product-name">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p>' + addBtn + '</div>';
             }
             container.innerHTML = html;
             // Add click handlers to featured product cards
@@ -518,13 +563,13 @@
 
             var addBtn = '';
             if (p.id === 8) {
-                addBtn = '<div style="margin:16px 0;"><select id="detail-hookcover-size" style="padding:10px; width:100%; max-width:200px; border-radius:5px; border:1px solid #ccc; margin-bottom:12px;"><option value="">Select Size</option><option value="1/0">1/0</option><option value="2/0">2/0</option><option value="3/0">3/0</option><option value="4/0">4/0</option><option value="5/0">5/0</option></select><p style="font-size:13px; color:#666; margin-bottom:12px;">16 per order</p></div><button onclick="addHookCoversDetailToCart()">Add to Cart</button>';
+                addBtn = '<div style="margin:16px 0;"><select id="detail-hookcover-size" style="padding:10px; width:100%; max-width:200px; border-radius:5px; border:1px solid #ccc; margin-bottom:12px;"><option value="">Select Size</option><option value="1/0">1/0</option><option value="2/0">2/0</option><option value="3/0">3/0</option><option value="4/0">4/0</option><option value="5/0">5/0</option></select><p style="font-size:13px; color:#666; margin-bottom:12px;">16 per order</p>' + qtyHtml('qty-hookcover-detail') + '</div><button onclick="addHookCoversDetailToCart()">Add to Cart</button>';
             } else if (p.id === 9) {
-                addBtn = '<div style="margin:16px 0;"><div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:12px;"><label><input type="radio" name="detail-stake-color" value="green" checked onchange="updateDetailStakePrice()"> Green — $14.99</label><label><input type="radio" name="detail-stake-color" value="white" onchange="updateDetailStakePrice()"> White — $14.99</label><label><input type="radio" name="detail-stake-color" value="dual" onchange="updateDetailStakePrice()"> Dual Pack — $24.99</label></div></div><button onclick="addStakeDetailToCart()">Add to Cart</button>';
+                addBtn = '<div style="margin:16px 0;"><div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:12px;"><label><input type="radio" name="detail-stake-color" value="green" checked onchange="updateDetailStakePrice()"> Green — $14.99</label><label><input type="radio" name="detail-stake-color" value="white" onchange="updateDetailStakePrice()"> White — $14.99</label><label><input type="radio" name="detail-stake-color" value="dual" onchange="updateDetailStakePrice()"> Dual Pack — $24.99</label></div>' + qtyHtml('qty-stake-detail') + '</div><button onclick="addStakeDetailToCart()">Add to Cart</button>';
             } else if (p.id === 10) {
-                addBtn = '<div style="margin:16px 0;"><div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:12px;"><label><input type="radio" name="detail-mountrod-color" value="gold"> Gold</label><label><input type="radio" name="detail-mountrod-color" value="silver"> Silver</label><label><input type="radio" name="detail-mountrod-color" value="blue"> Blue</label></div></div><button onclick="addMountRodDetailToCart()">Add to Cart</button>';
+                addBtn = '<div style="margin:16px 0;"><div style="display:flex; gap:20px; flex-wrap:wrap; margin-bottom:12px;"><label><input type="radio" name="detail-mountrod-color" value="gold"> Gold</label><label><input type="radio" name="detail-mountrod-color" value="silver"> Silver</label><label><input type="radio" name="detail-mountrod-color" value="blue"> Blue</label></div>' + qtyHtml('qty-mountrod-detail') + '</div><button onclick="addMountRodDetailToCart()">Add to Cart</button>';
             } else {
-                addBtn = '<button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button>';
+                addBtn = qtyHtml('qty-detail-' + p.id) + '<button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ', \'qty-detail-' + p.id + '\')">Add to Cart</button>';
             }
 
             var content = '<h1 style="margin-bottom:8px; color:#061827;">' + p.name + '</h1>';
@@ -554,9 +599,15 @@
             var sizeSelect = document.getElementById('detail-hookcover-size');
             var size = sizeSelect.value;
             if (!size) { alert('Please select a size'); return; }
-            cart.push({ id: 8, name: 'Treble Hook Covers - ' + size, price: 5.99, qty: 16 });
+            var qty = getQty('qty-hookcover-detail');
+            var basePrice = 5.99;
+            var disc = itemDiscount(qty);
+            var unitPrice = parseFloat((basePrice * (1 - disc)).toFixed(2));
+            cart.push({ id: 8, name: 'Treble Hook Covers - ' + size, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 16 });
             updateCartCount();
-            alert('Added to cart: 16 Hook Covers (Size ' + size + ')');
+            var msg = 'Added ' + qty + ' pack(s) of 16 Hook Covers (Size ' + size + ')!';
+            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-pack discount applied!';
+            alert(msg);
             sizeSelect.value = '';
         }
 
@@ -567,10 +618,15 @@
                 if (colorRadios[i].checked) { selectedColor = colorRadios[i].value; break; }
             }
             var name = 'Stake Rod Holder - ' + selectedColor.charAt(0).toUpperCase() + selectedColor.slice(1);
-            var price = selectedColor === 'dual' ? 24.99 : 14.99;
-            cart.push({ id: 9, name: name, price: price });
+            var basePrice = selectedColor === 'dual' ? 24.99 : 14.99;
+            var qty = getQty('qty-stake-detail');
+            var disc = itemDiscount(qty);
+            var unitPrice = parseFloat((basePrice * (1 - disc)).toFixed(2));
+            cart.push({ id: 9, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc });
             updateCartCount();
-            alert(name + ' added to cart!');
+            var msg = name + ' (Qty: ' + qty + ') added to cart!';
+            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-unit discount applied!';
+            alert(msg);
         }
 
         function addMountRodDetailToCart() {
@@ -581,9 +637,15 @@
             }
             if (!selectedColor) { alert('Please select a color'); return; }
             var name = 'Mountable Rod Holder - ' + selectedColor.charAt(0).toUpperCase() + selectedColor.slice(1);
-            cart.push({ id: 10, name: name, price: 11.99, qty: 2 });
+            var basePrice = 11.99;
+            var qty = getQty('qty-mountrod-detail');
+            var disc = itemDiscount(qty);
+            var unitPrice = parseFloat((basePrice * (1 - disc)).toFixed(2));
+            cart.push({ id: 10, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 2 });
             updateCartCount();
-            alert(name + ' (Qty: 2) added to cart!');
+            var msg = name + ' (Qty: ' + qty + ' × 2-pack) added to cart!';
+            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-unit discount applied!';
+            alert(msg);
         }
 
         function changeFeaturedColor(imgId, color) {
@@ -629,19 +691,19 @@
                     imageHtml = '<img id="garmin73-img" src="/Garmin73SVblack.jpeg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;">';
                     colorSelector = '<div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="garmin73-color" value="black" checked onchange="changeColor(\'garmin73-img\', \'black\', \'garmin73\')"> Black</label><label style="margin-right: 10px;"><input type="radio" name="garmin73-color" value="blue" onchange="changeColor(\'garmin73-img\', \'blue\', \'garmin73\')"> Blue</label><label><input type="radio" name="garmin73-color" value="white" onchange="changeColor(\'garmin73-img\', \'white\', \'garmin73\')"> White</label></div>';
                 } else if (p.id === 8) {
-                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer;"><img id="hookcover-img" src="/Blkpurplehookcover.JPG" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px;"><img src="/Blkpurplehookcover.JPG" onclick="changeHookImg(\'/Blkpurplehookcover.JPG\')" style="width: 50px; height: 50px; cursor: pointer; border: 2px solid gold;"><img src="/Blkpurplehookcover4.JPG" onclick="changeHookImg(\'/Blkpurplehookcover4.JPG\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Blkpurplehookcover3.JPG" onclick="changeHookImg(\'/Blkpurplehookcover3.JPG\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Hookcoverpole.jpg" onclick="changeHookImg(\'/Hookcoverpole.jpg\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Hookcoverpole2.jpg" onclick="changeHookImg(\'/Hookcoverpole2.jpg\')" style="width: 50px; height: 50px; cursor: pointer;"></div><h3 class="product-name" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer; text-decoration:underline dotted #aaa;">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><div style="margin: 10px 0;"><select id="hookcover-size" style="padding: 8px; width: 100%; border-radius: 5px; border: 1px solid #ccc;"><option value="">Select Size</option><option value="1/0">1/0</option><option value="2/0">2/0</option><option value="3/0">3/0</option><option value="4/0">4/0</option><option value="5/0">5/0</option></select></div><p style="font-size: 12px; color: #666;">16 per order</p><button onclick="addHookCoversToCart()">Add to Cart</button></div>';
+                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer;"><img id="hookcover-img" src="/Blkpurplehookcover.JPG" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px;"><img src="/Blkpurplehookcover.JPG" onclick="changeHookImg(\'/Blkpurplehookcover.JPG\')" style="width: 50px; height: 50px; cursor: pointer; border: 2px solid gold;"><img src="/Blkpurplehookcover4.JPG" onclick="changeHookImg(\'/Blkpurplehookcover4.JPG\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Blkpurplehookcover3.JPG" onclick="changeHookImg(\'/Blkpurplehookcover3.JPG\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Hookcoverpole.jpg" onclick="changeHookImg(\'/Hookcoverpole.jpg\')" style="width: 50px; height: 50px; cursor: pointer;"><img src="/Hookcoverpole2.jpg" onclick="changeHookImg(\'/Hookcoverpole2.jpg\')" style="width: 50px; height: 50px; cursor: pointer;"></div><h3 class="product-name" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer; text-decoration:underline dotted #aaa;">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><div style="margin: 10px 0;"><select id="hookcover-size" style="padding: 8px; width: 100%; border-radius: 5px; border: 1px solid #ccc;"><option value="">Select Size</option><option value="1/0">1/0</option><option value="2/0">2/0</option><option value="3/0">3/0</option><option value="4/0">4/0</option><option value="5/0">5/0</option></select></div><p style="font-size: 12px; color: #666;">16 per order</p>' + qtyHtml('qty-hookcover') + '<button onclick="addHookCoversToCart()">Add to Cart</button></div>';
                     continue;
                 } else if (p.id === 9) {
-                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer;"><img id="stake-img" src="/Greenstakefront.jpg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><h3 class="product-name" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer; text-decoration:underline dotted #aaa;">' + p.name + '</h3><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="stake-color" value="green" checked onchange="changeStakeColor(\'stake-img\', \'green\'); updateStakePrice(\'green\')"> Green</label><label style="margin-right: 10px;"><input type="radio" name="stake-color" value="white" onchange="changeStakeColor(\'stake-img\', \'white\'); updateStakePrice(\'white\')"> White</label><label><input type="radio" name="stake-color" value="dual" onchange="changeStakeColor(\'stake-img\', \'dual\'); updateStakePrice(\'dual\')"> Dual Pack</label></div><div id="stake-price" class="product-price">$14.99</div><p class="product-desc">' + p.desc + '</p><button onclick="addStakeToCart()">Add to Cart</button></div>';
+                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer;"><img id="stake-img" src="/Greenstakefront.jpg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><h3 class="product-name" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer; text-decoration:underline dotted #aaa;">' + p.name + '</h3><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="stake-color" value="green" checked onchange="changeStakeColor(\'stake-img\', \'green\'); updateStakePrice(\'green\')"> Green</label><label style="margin-right: 10px;"><input type="radio" name="stake-color" value="white" onchange="changeStakeColor(\'stake-img\', \'white\'); updateStakePrice(\'white\')"> White</label><label><input type="radio" name="stake-color" value="dual" onchange="changeStakeColor(\'stake-img\', \'dual\'); updateStakePrice(\'dual\')"> Dual Pack</label></div><div id="stake-price" class="product-price">$14.99</div><p class="product-desc">' + p.desc + '</p>' + qtyHtml('qty-stake') + '<button onclick="addStakeToCart()">Add to Cart</button></div>';
                     continue;
                 } else if (p.id === 10) {
-                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer;"><img id="mountrod-img" src="/Multirodholder.jpg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><h3 class="product-name" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer; text-decoration:underline dotted #aaa;">' + p.name + '</h3><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="mountrod-color" value="gold" onchange="changeMountRodColor(\'gold\')"> Gold</label><label style="margin-right: 10px;"><input type="radio" name="mountrod-color" value="silver" onchange="changeMountRodColor(\'silver\')"> Silver</label><label><input type="radio" name="mountrod-color" value="blue" onchange="changeMountRodColor(\'blue\')"> Blue</label></div><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addMountRodToCart()">Add to Cart</button></div>';
+                    html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer;"><img id="mountrod-img" src="/Multirodholder.jpg" style="width: 100%; height: 200px; object-fit: contain; background: #174B8A; border-radius: 5px;"></div><h3 class="product-name" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer; text-decoration:underline dotted #aaa;">' + p.name + '</h3><div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px;"><label style="margin-right: 10px;"><input type="radio" name="mountrod-color" value="gold" onchange="changeMountRodColor(\'gold\')"> Gold</label><label style="margin-right: 10px;"><input type="radio" name="mountrod-color" value="silver" onchange="changeMountRodColor(\'silver\')"> Silver</label><label><input type="radio" name="mountrod-color" value="blue" onchange="changeMountRodColor(\'blue\')"> Blue</label></div><div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p>' + qtyHtml('qty-mountrod') + '<button onclick="addMountRodToCart()">Add to Cart</button></div>';
                     continue;
                 } else {
                     imageHtml = '🎣';
                 }
                 
-                html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer;">' + imageHtml + '</div><h3 class="product-name" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer; text-decoration:underline dotted #aaa;">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p><button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ')">Add to Cart</button></div>';
+                html += '<div class="product-card" data-id="' + p.id + '"><div class="product-image" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer;">' + imageHtml + '</div><h3 class="product-name" onclick="showProductDetail(' + p.id + ')" style="cursor:pointer; text-decoration:underline dotted #aaa;">' + p.name + '</h3>' + colorSelector + '<div class="product-price">$' + p.price + '</div><p class="product-desc">' + p.desc + '</p>' + qtyHtml('qty-prod-' + p.id) + '<button onclick="addToCart(' + p.id + ', \'' + p.name + '\', ' + p.price + ', \'qty-prod-' + p.id + '\')">Add to Cart</button></div>';
             }
             container.innerHTML = html;
         }
@@ -667,10 +729,43 @@
             }
         }
 
-        function addToCart(id, name, price) {
-            cart.push({ id: id, name: name, price: price });
+        // --- Qty selector helpers ---
+        function makeQtyId(prefix) { return 'qty-' + prefix; }
+
+        function qtyHtml(inputId) {
+            return '<div class="qty-row"><label>Qty:</label><div class="qty-selector"><button class="qty-btn" onclick="changeQty(\'' + inputId + '\',-1)">−</button><input class="qty-val" id="' + inputId + '" type="number" value="1" min="1" max="10" readonly><button class="qty-btn" onclick="changeQty(\'' + inputId + '\',1)">+</button></div><span id="' + inputId + '-badge" class="qty-discount-badge" style="display:none;">10% off!</span></div>';
+        }
+
+        function changeQty(inputId, delta) {
+            var el = document.getElementById(inputId);
+            if (!el) return;
+            var v = parseInt(el.value) + delta;
+            if (v < 1) v = 1;
+            if (v > 10) v = 10;
+            el.value = v;
+            var badge = document.getElementById(inputId + '-badge');
+            if (badge) badge.style.display = v > 1 ? 'inline-block' : 'none';
+        }
+
+        function getQty(inputId) {
+            var el = document.getElementById(inputId);
+            return el ? Math.max(1, Math.min(10, parseInt(el.value) || 1)) : 1;
+        }
+
+        // 10% off for each additional unit of same product (capped at 90%)
+        function itemDiscount(qty) {
+            return Math.min((qty - 1) * 0.10, 0.90);
+        }
+
+        function addToCart(id, name, price, qtyInputId) {
+            var qty = qtyInputId ? getQty(qtyInputId) : 1;
+            var disc = itemDiscount(qty);
+            var unitPrice = parseFloat((price * (1 - disc)).toFixed(2));
+            cart.push({ id: id, name: name, price: price, qty: qty, unitPrice: unitPrice, discount: disc });
             updateCartCount();
-            alert(name + ' added to cart!');
+            var msg = name + ' (Qty: ' + qty + ') added to cart!';
+            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-unit discount applied!';
+            alert(msg);
         }
 
         function changeHookImg(src) {
@@ -681,13 +776,16 @@
         function addHookCoversToCart() {
             var sizeSelect = document.getElementById('hookcover-size');
             var size = sizeSelect.value;
-            if (!size) {
-                alert('Please select a size');
-                return;
-            }
-            cart.push({ id: 8, name: 'Treble Hook Covers - ' + size, price: 5.99, qty: 16 });
+            if (!size) { alert('Please select a size'); return; }
+            var qty = getQty('qty-hookcover');
+            var basePrice = 5.99;
+            var disc = itemDiscount(qty);
+            var unitPrice = parseFloat((basePrice * (1 - disc)).toFixed(2));
+            cart.push({ id: 8, name: 'Treble Hook Covers - ' + size, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 16 });
             updateCartCount();
-            alert('Added to cart: 16 Hook Covers (Size ' + size + ')');
+            var msg = 'Added ' + qty + ' pack(s) of 16 Hook Covers (Size ' + size + ')!';
+            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-pack discount applied!';
+            alert(msg);
             sizeSelect.value = '';
         }
 
@@ -713,30 +811,36 @@
             var colorRadios = document.getElementsByName('mountrod-color');
             var selectedColor = 'Gold';
             for (var i = 0; i < colorRadios.length; i++) {
-                if (colorRadios[i].checked) {
-                    selectedColor = colorRadios[i].value.charAt(0).toUpperCase() + colorRadios[i].value.slice(1);
-                    break;
-                }
+                if (colorRadios[i].checked) { selectedColor = colorRadios[i].value.charAt(0).toUpperCase() + colorRadios[i].value.slice(1); break; }
             }
             var name = 'Mountable Rod Holder - ' + selectedColor;
-            cart.push({ id: 10, name: name, price: 11.99, qty: 2 });
+            var basePrice = 11.99;
+            var qty = getQty('qty-mountrod');
+            var disc = itemDiscount(qty);
+            var unitPrice = parseFloat((basePrice * (1 - disc)).toFixed(2));
+            cart.push({ id: 10, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 2 });
             updateCartCount();
-            alert(name + ' (Qty: 2) added to cart!');
+            var msg = name + ' (Qty: ' + qty + ' × 2-pack) added to cart!';
+            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-unit discount applied!';
+            alert(msg);
         }
 
         function addMountRodFeaturedToCart() {
             var colorRadios = document.getElementsByName('mountrod-featured-color');
             var selectedColor = 'Gold';
             for (var i = 0; i < colorRadios.length; i++) {
-                if (colorRadios[i].checked) {
-                    selectedColor = colorRadios[i].value.charAt(0).toUpperCase() + colorRadios[i].value.slice(1);
-                    break;
-                }
+                if (colorRadios[i].checked) { selectedColor = colorRadios[i].value.charAt(0).toUpperCase() + colorRadios[i].value.slice(1); break; }
             }
             var name = 'Mountable Rod Holder - ' + selectedColor;
-            cart.push({ id: 10, name: name, price: 11.99, qty: 2 });
+            var basePrice = 11.99;
+            var qty = getQty('qty-mountrod-featured');
+            var disc = itemDiscount(qty);
+            var unitPrice = parseFloat((basePrice * (1 - disc)).toFixed(2));
+            cart.push({ id: 10, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc, packQty: 2 });
             updateCartCount();
-            alert(name + ' (Qty: 2) added to cart!');
+            var msg = name + ' (Qty: ' + qty + ' × 2-pack) added to cart!';
+            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-unit discount applied!';
+            alert(msg);
         }
 
         function changeStakeColor(imgId, color) {
@@ -765,20 +869,47 @@
             var colorRadios = document.getElementsByName('stake-color');
             var selectedColor = '';
             for (var i = 0; i < colorRadios.length; i++) {
-                if (colorRadios[i].checked) {
-                    selectedColor = colorRadios[i].value;
-                    break;
-                }
+                if (colorRadios[i].checked) { selectedColor = colorRadios[i].value; break; }
             }
             var name = 'Stake Rod Holder - ' + selectedColor.charAt(0).toUpperCase() + selectedColor.slice(1);
-            var price = selectedColor === 'dual' ? 24.99 : 14.99;
-            cart.push({ id: 9, name: name, price: price });
+            var basePrice = selectedColor === 'dual' ? 24.99 : 14.99;
+            var qty = getQty('qty-stake');
+            var disc = itemDiscount(qty);
+            var unitPrice = parseFloat((basePrice * (1 - disc)).toFixed(2));
+            cart.push({ id: 9, name: name, price: basePrice, qty: qty, unitPrice: unitPrice, discount: disc });
             updateCartCount();
-            alert(name + ' added to cart!');
+            var msg = name + ' (Qty: ' + qty + ') added to cart!';
+            if (disc > 0) msg += '\n' + Math.round(disc * 100) + '% multi-unit discount applied!';
+            alert(msg);
         }
 
         function updateCartCount() {
             document.getElementById('cart-count').textContent = cart.length;
+        }
+
+        function cartTotals() {
+            var subtotal = 0;
+            var totalDiscount = 0;
+            for (var i = 0; i < cart.length; i++) {
+                var item = cart[i];
+                var qty = item.qty || 1;
+                var basePrice = item.price;
+                var disc = item.discount || 0;
+                var lineTotal = parseFloat((basePrice * qty * (1 - disc)).toFixed(2));
+                subtotal += lineTotal;
+                totalDiscount += parseFloat((basePrice * qty * disc).toFixed(2));
+            }
+            subtotal = parseFloat(subtotal.toFixed(2));
+            totalDiscount = parseFloat(totalDiscount.toFixed(2));
+            var promoDiscount = 0;
+            if (appliedPromo) {
+                promoDiscount = parseFloat((subtotal * appliedPromo.discount).toFixed(2));
+            }
+            var discountedSubtotal = parseFloat((subtotal - promoDiscount).toFixed(2));
+            var shipping = discountedSubtotal >= 60 ? 0 : 9.95;
+            var tax = parseFloat(((discountedSubtotal + shipping) * 0.06).toFixed(2));
+            var total = parseFloat((discountedSubtotal + shipping + tax).toFixed(2));
+            return { subtotal: subtotal, totalDiscount: totalDiscount, promoDiscount: promoDiscount, discountedSubtotal: discountedSubtotal, shipping: shipping, tax: tax, total: total };
         }
 
         function displayCart() {
@@ -788,26 +919,45 @@
                 return;
             }
 
-            var subtotal = 0;
             var html = '';
             for (var i = 0; i < cart.length; i++) {
                 var item = cart[i];
-                subtotal += item.price;
-                html += '<div class="comment-box" style="border-left-color: #C9933A;"><strong>' + item.name + '</strong>' + (item.qty ? ' (Qty: ' + item.qty + ')' : '') + ' - $' + item.price.toFixed(2) + ' <button onclick="removeFromCart(' + i + ')" style="float: right; background: #e74c3c; padding: 5px 10px; font-size: 12px;">Remove</button></div>';
+                var qty = item.qty || 1;
+                var disc = item.discount || 0;
+                var lineBase = parseFloat((item.price * qty).toFixed(2));
+                var lineSaved = parseFloat((item.price * qty * disc).toFixed(2));
+                var lineTotal = parseFloat((lineBase - lineSaved).toFixed(2));
+                var discLabel = disc > 0 ? ' <span style="color:#27ae60; font-size:12px; font-weight:bold;">(' + Math.round(disc*100) + '% multi-unit discount)</span>' : '';
+                html += '<div class="comment-box" style="border-left-color:#C9933A;">';
+                html += '<div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">';
+                html += '<div><strong>' + item.name + '</strong> × ' + qty + discLabel;
+                if (disc > 0) html += '<div class="cart-discount-line">Base: $' + lineBase.toFixed(2) + ' — Saved: −$' + lineSaved.toFixed(2) + '</div>';
+                html += '</div>';
+                html += '<div style="display:flex; align-items:center; gap:10px;"><strong>$' + lineTotal.toFixed(2) + '</strong><button onclick="removeFromCart(' + i + ')" style="background:#e74c3c; padding:5px 10px; font-size:12px;">Remove</button></div>';
+                html += '</div></div>';
             }
-            
-            var shipping = subtotal >= 60 ? 0 : 9.95;
-            var shippingText = shipping === 0 ? 'FREE (Order over $60)' : '$' + shipping.toFixed(2);
-            var tax = (subtotal + shipping) * 0.06;
-            var total = subtotal + shipping + tax;
-            
-            html += '<div style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 5px;">';
-            html += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Subtotal:</strong> $' + subtotal.toFixed(2) + '</div>';
-            html += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Shipping:</strong> ' + shippingText + '</div>';
-            html += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Tax (6%):</strong> $' + tax.toFixed(2) + '</div>';
-            html += '<div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #C9933A; border-top: 1px solid #ddd; padding-top: 10px;"><strong>Total:</strong> $' + total.toFixed(2) + '</div>';
+
+            var t = cartTotals();
+            var shippingText = t.shipping === 0 ? '<span style="color:#27ae60;">FREE</span> <span style="font-size:12px; color:#27ae60;">(order over $60)</span>' : '$' + t.shipping.toFixed(2);
+
+            html += '<div class="order-breakdown">';
+            html += '<div style="font-weight:bold; font-size:15px; margin-bottom:12px; color:#061827;">Order Summary</div>';
+            html += '<div class="breakdown-row"><span>Items Subtotal</span><span>$' + t.subtotal.toFixed(2) + '</span></div>';
+            if (t.totalDiscount > 0) {
+                html += '<div class="breakdown-row cart-discount-line"><span>🏷 Multi-Unit Discounts</span><span>−$' + t.totalDiscount.toFixed(2) + '</span></div>';
+            }
+            html += '<div class="breakdown-row"><span>Shipping</span><span>' + shippingText + '</span></div>';
+            html += '<div class="breakdown-row"><span>Tax (6%)</span><span>$' + t.tax.toFixed(2) + '</span></div>';
+            html += '<div class="breakdown-row total-row"><span>Total</span><span>$' + t.total.toFixed(2) + '</span></div>';
+            if (t.totalDiscount > 0) {
+                html += '<div style="margin-top:10px; padding:8px; background:#eafaf1; border-radius:5px; text-align:center; font-size:13px; color:#27ae60; font-weight:bold;">🎉 You saved $' + t.totalDiscount.toFixed(2) + ' with multi-unit discounts!</div>';
+            }
+            if (t.shipping > 0) {
+                var needed = parseFloat((60 - t.subtotal).toFixed(2));
+                html += '<div style="margin-top:8px; text-align:center; font-size:12px; color:#C9933A;">Add $' + needed.toFixed(2) + ' more for FREE shipping!</div>';
+            }
             html += '</div>';
-            
+
             container.innerHTML = html;
         }
 
@@ -815,6 +965,37 @@
             cart.splice(index, 1);
             updateCartCount();
             displayCart();
+        }
+
+        function applyPromoCode() {
+            var code = document.getElementById('promoCodeInput').value.trim().toUpperCase();
+            var feedback = document.getElementById('promo-feedback');
+            if (!code) {
+                feedback.style.color = '#e74c3c';
+                feedback.textContent = 'Please enter a promo code.';
+                return;
+            }
+            if (PROMO_CODES[code]) {
+                appliedPromo = PROMO_CODES[code];
+                appliedPromo.code = code;
+                feedback.style.color = '#27ae60';
+                feedback.textContent = '✅ Code applied: ' + appliedPromo.description;
+                document.getElementById('promoCodeInput').disabled = true;
+                initializeCheckout();
+            } else {
+                appliedPromo = null;
+                feedback.style.color = '#e74c3c';
+                feedback.textContent = '❌ Invalid promo code. Please try again.';
+            }
+        }
+
+        function removePromoCode() {
+            appliedPromo = null;
+            var input = document.getElementById('promoCodeInput');
+            if (input) { input.value = ''; input.disabled = false; }
+            var feedback = document.getElementById('promo-feedback');
+            if (feedback) feedback.textContent = '';
+            initializeCheckout();
         }
 
         function initializeCheckout() {
@@ -830,23 +1011,45 @@
                 }
             }
 
-            var subtotal = 0;
-            for (var i = 0; i < cart.length; i++) {
-                subtotal += cart[i].price;
+            // Restore promo UI state
+            var promoInput = document.getElementById('promoCodeInput');
+            var promoFeedback = document.getElementById('promo-feedback');
+            if (appliedPromo && promoInput) {
+                promoInput.value = appliedPromo.code;
+                promoInput.disabled = true;
+                promoFeedback.style.color = '#27ae60';
+                promoFeedback.innerHTML = '✅ Code applied: ' + appliedPromo.description + ' &nbsp;<a href="#" onclick="removePromoCode(); return false;" style="font-size:12px; color:#e74c3c;">Remove</a>';
             }
-            
-            var shipping = subtotal >= 60 ? 0 : 9.95;
-            var shippingText = shipping === 0 ? 'FREE (Order over $60)' : '$' + shipping.toFixed(2);
-            var tax = (subtotal + shipping) * 0.06;
-            var total = subtotal + shipping + tax;
-            
-            var summaryHtml = '<div style="background: white; padding: 15px; border-radius: 5px; margin-bottom: 20px;">';
-            summaryHtml += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Subtotal:</strong> $' + subtotal.toFixed(2) + '</div>';
-            summaryHtml += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Shipping:</strong> ' + shippingText + '</div>';
-            summaryHtml += '<div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>Tax (6%):</strong> $' + tax.toFixed(2) + '</div>';
-            summaryHtml += '<div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #C9933A; border-top: 2px solid #ddd; padding-top: 10px;"><strong>Total Due:</strong> $' + total.toFixed(2) + '</div>';
+
+            var t = cartTotals();
+            var shippingText = t.shipping === 0 ? 'FREE (Order over $60)' : '$' + t.shipping.toFixed(2);
+
+            var summaryHtml = '<div class="order-breakdown" style="background:white;">';
+            summaryHtml += '<div style="font-weight:bold; font-size:15px; margin-bottom:12px; color:#061827;">Order Summary</div>';
+            for (var i = 0; i < cart.length; i++) {
+                var item = cart[i];
+                var qty = item.qty || 1;
+                var disc = item.discount || 0;
+                var lineTotal = parseFloat((item.price * qty * (1 - disc)).toFixed(2));
+                var discTag = disc > 0 ? ' <span style="color:#27ae60; font-size:11px;">(' + Math.round(disc*100) + '% off)</span>' : '';
+                summaryHtml += '<div class="breakdown-row"><span>' + item.name + ' × ' + qty + discTag + '</span><span>$' + lineTotal.toFixed(2) + '</span></div>';
+            }
+            summaryHtml += '<div style="border-top:1px dashed #ddd; margin:8px 0;"></div>';
+            summaryHtml += '<div class="breakdown-row"><span>Items Subtotal</span><span>$' + t.subtotal.toFixed(2) + '</span></div>';
+            if (t.totalDiscount > 0) {
+                summaryHtml += '<div class="breakdown-row cart-discount-line"><span>🏷 Multi-Unit Discounts</span><span>−$' + t.totalDiscount.toFixed(2) + '</span></div>';
+            }
+            if (t.promoDiscount > 0) {
+                summaryHtml += '<div class="breakdown-row" style="color:#C9933A; font-weight:bold;"><span>🎟 Promo (' + appliedPromo.code + ')</span><span>−$' + t.promoDiscount.toFixed(2) + '</span></div>';
+            }
+            summaryHtml += '<div class="breakdown-row"><span>Shipping</span><span>' + shippingText + '</span></div>';
+            summaryHtml += '<div class="breakdown-row"><span>Tax (6%)</span><span>$' + t.tax.toFixed(2) + '</span></div>';
+            summaryHtml += '<div class="breakdown-row total-row"><span>Total Due</span><span>$' + t.total.toFixed(2) + '</span></div>';
+            if (t.promoDiscount > 0) {
+                summaryHtml += '<div style="margin-top:10px; padding:8px; background:#fff8ee; border-radius:5px; text-align:center; font-size:13px; color:#C9933A; font-weight:bold;">🎉 Promo code saved you $' + t.promoDiscount.toFixed(2) + '!</div>';
+            }
             summaryHtml += '</div>';
-            
+
             document.getElementById('order-summary-container').innerHTML = summaryHtml;
         }
 
@@ -870,14 +1073,10 @@
                 return;
             }
             
-            var subtotal = 0;
-            for (var i = 0; i < cart.length; i++) {
-                subtotal += cart[i].price;
-            }
-            
-            var shipping = subtotal >= 60 ? 0 : 9.95;
-            var tax = (subtotal + shipping) * 0.06;
-            var total = subtotal + shipping + tax;
+            var t = cartTotals();
+            var total = t.total;
+            var subtotal = t.subtotal;
+            var shipping = t.shipping;
             var amount = Math.round(total * 100);
 
             // SEND EMAIL IMMEDIATELY when button is clicked
