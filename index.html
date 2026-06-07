@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReelGearCo - 3D Printed Garmin Fish Finder Sun Shades & Fishing Gear</title>
-    <meta name="description" content="Custom 3D printed Garmin fish finder sun shades for Striker 4, Echomap 93SV, 106SV, 126SV, GPSMAP 1022 and more. Also treble hook covers and rod holders. Free shipping over $60.">
+    <meta name="description" content="Custom 3D printed Garmin fish finder sun shades for Striker 4, Echomap 93SV, 106SV, 126SV, GPSMAP 1022 and more. Also treble hook covers and rod holders. Free US shipping over $60.">
     <meta property="og:title" content="ReelGearCo - All Your 3D Printed Fishing Needs!">
     <meta property="og:description" content="Premium 3D printed fishing gear. Garmin fish finder sun shades, treble hook covers, rod holders and more.">
     <meta property="og:image" content="https://www.reelgearco.com/og-thumbnail.png">
@@ -318,7 +318,7 @@
             <h1>REEL GEAR</h1>
             <p>Premium 3D Printed Fishing Gear - Garmin Sun Shades</p>
             <div style="margin-top: 20px; padding: 10px 20px; background: rgba(201, 147, 58, 0.2); border-radius: 5px; border: 2px solid #C9933A;">
-                <p style="color: #C9933A; font-weight: bold; margin: 0;">🚚 FREE SHIPPING on orders over $60 | Standard Shipping $9.95</p>
+                <p style="color: #C9933A; font-weight: bold; margin: 0;">🚚 FREE US SHIPPING on orders over $60 | US Standard $9.95 | International $60.00</p>
             </div>
         </div>
         <div class="container">
@@ -382,6 +382,21 @@
                 <div class="form-group">
                     <label>ZIP Code:</label>
                     <input type="text" id="zipcode" required>
+                </div>
+                <div class="form-group">
+                    <label>Country:</label>
+                    <select id="country" required onchange="initializeCheckout()" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;">
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="AU">Australia</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="NZ">New Zealand</option>
+                        <option value="DE">Germany</option>
+                        <option value="FR">France</option>
+                        <option value="JP">Japan</option>
+                        <option value="MX">Mexico</option>
+                        <option value="OTHER">Other</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Card Details:</label>
@@ -926,7 +941,7 @@
             document.getElementById('cart-count').textContent = total;
         }
 
-        function cartTotals() {
+        function cartTotals(country) {
             var subtotal = 0;
             var totalDiscount = 0;
             for (var i = 0; i < cart.length; i++) {
@@ -945,10 +960,16 @@
                 promoDiscount = parseFloat((subtotal * appliedPromo.discount).toFixed(2));
             }
             var discountedSubtotal = parseFloat((subtotal - promoDiscount).toFixed(2));
-            var shipping = discountedSubtotal >= 60 ? 0 : 9.95;
+            var isUSA = !country || country === 'US';
+            var shipping;
+            if (isUSA) {
+                shipping = discountedSubtotal >= 60 ? 0 : 9.95;
+            } else {
+                shipping = 60.00;
+            }
             var tax = parseFloat(((discountedSubtotal + shipping) * 0.06).toFixed(2));
             var total = parseFloat((discountedSubtotal + shipping + tax).toFixed(2));
-            return { subtotal: subtotal, totalDiscount: totalDiscount, promoDiscount: promoDiscount, discountedSubtotal: discountedSubtotal, shipping: shipping, tax: tax, total: total };
+            return { subtotal: subtotal, totalDiscount: totalDiscount, promoDiscount: promoDiscount, discountedSubtotal: discountedSubtotal, shipping: shipping, tax: tax, total: total, isUSA: isUSA };
         }
 
         function displayCart() {
@@ -976,8 +997,8 @@
                 html += '</div></div>';
             }
 
-            var t = cartTotals();
-            var shippingText = t.shipping === 0 ? '<span style="color:#27ae60;">FREE</span> <span style="font-size:12px; color:#27ae60;">(order over $60)</span>' : '$' + t.shipping.toFixed(2);
+            var t = cartTotals('US');
+            var shippingText = t.shipping === 0 ? '<span style="color:#27ae60;">FREE</span> <span style="font-size:12px; color:#27ae60;">(US order over $60)</span>' : '$' + t.shipping.toFixed(2) + ' <span style="font-size:12px; color:#888;">(US — intl $60.00)</span>';
 
             // Promo box
             html += '<div class="order-breakdown" style="margin-bottom:12px;">';
@@ -1015,7 +1036,8 @@
             }
             if (t.shipping > 0) {
                 var needed = parseFloat((60 - t.discountedSubtotal).toFixed(2));
-                if (needed > 0) html += '<div style="margin-top:8px; text-align:center; font-size:12px; color:#C9933A;">Add $' + needed.toFixed(2) + ' more for FREE shipping!</div>';
+                if (needed > 0) html += '<div style="margin-top:8px; text-align:center; font-size:12px; color:#C9933A;">Add $' + needed.toFixed(2) + ' more for FREE US shipping!</div>';
+                html += '<div style="margin-top:4px; text-align:center; font-size:11px; color:#999;">International orders ship for $60.00 flat</div>';
             }
             html += '</div>';
 
@@ -1085,6 +1107,8 @@
         }
 
         function initializeCheckout() {
+            var countryEl = document.getElementById('country');
+            var country = countryEl ? countryEl.value : 'US';
             if (!stripe) {
                 try {
                     stripe = Stripe('pk_live_51P1fe6LhsSUmVAB0ubb1Z3r1ArgPlPEfc9091em3U4NrVYc7RgXMc1eOT6KO1hLkPVjV7aTBzzotOCu6cmdIx70e003fzISPPa');
@@ -1113,8 +1137,13 @@
                 }
             }
 
-            var t = cartTotals();
-            var shippingText = t.shipping === 0 ? 'FREE (Order over $60)' : '$' + t.shipping.toFixed(2);
+            var t = cartTotals(country);
+            var shippingText;
+            if (t.isUSA) {
+                shippingText = t.shipping === 0 ? 'FREE (US order over $60)' : '$' + t.shipping.toFixed(2) + ' (US Standard)';
+            } else {
+                shippingText = '$' + t.shipping.toFixed(2) + ' (International)';
+            }
 
             var summaryHtml = '<div class="order-breakdown" style="background:white;">';
             summaryHtml += '<div style="font-weight:bold; font-size:15px; margin-bottom:12px; color:#061827;">Order Summary</div>';
@@ -1159,13 +1188,15 @@
             var city = document.getElementById('city').value;
             var state = document.getElementById('state').value;
             var zipcode = document.getElementById('zipcode').value;
+            var countryEl = document.getElementById('country');
+            var country = countryEl ? countryEl.value : 'US';
 
-            if (!address || !city || !state || !zipcode) {
+            if (!address || !city || !state || !zipcode || !country) {
                 alert('Please fill in all shipping address fields');
                 return;
             }
             
-            var t = cartTotals();
+            var t = cartTotals(country);
             var total = t.total;
             var subtotal = t.subtotal;
             var shipping = t.shipping;
@@ -1183,6 +1214,7 @@
                     city: city,
                     state: state,
                     zipcode: zipcode,
+                    country: country,
                     items: cart,
                     total: total,
                     cartTotal: subtotal
@@ -1221,6 +1253,7 @@
                             city: city,
                             state: state,
                             zipcode: zipcode,
+                            country: country,
                             items: cart,
                             total: total,
                             cartTotal: subtotal
@@ -1242,6 +1275,7 @@
                             city: city,
                             state: state,
                             zipcode: zipcode,
+                            country: country,
                             items: cart,
                             total: total,
                             cartTotal: subtotal
