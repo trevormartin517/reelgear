@@ -22,7 +22,8 @@ const PRICES = {
 
 const PROMO_CODES = {
   FRIEND20: 0.20,
-  EBAY15: 0.15
+  EBAY20: 0.2,
+  WELCOME10: 0.10
 };
 
 function r2(n) {
@@ -78,7 +79,11 @@ module.exports = async (req, res) => {
     const discountedSubtotal = r2(merchSubtotal - promoDiscount);
 
     const isUSA = !country || country === 'US';
-    const shipping = isUSA ? (discountedSubtotal >= 60 ? 0 : 9.95) : 60.0;
+    // Treble Hook Cover-only orders always ship free in the US
+    const onlyHookCovers = items.every((i) => Number(i.id) === 8);
+    const shipping = isUSA
+      ? (onlyHookCovers || discountedSubtotal >= 60 ? 0 : 9.95)
+      : 60.0;
 
     // 6% Michigan sales tax — collected only on US orders shipping to Michigan
     const st = String(state || '').trim().toUpperCase();
