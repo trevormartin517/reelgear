@@ -314,7 +314,11 @@
             <h1>REEL GEAR</h1>
             <p>Premium 3D Printed Fishing Gear - Garmin Sun Shades</p>
             <div style="margin-top: 20px; padding: 10px 20px; background: rgba(201, 147, 58, 0.2); border-radius: 5px; border: 2px solid #C9933A;">
-                <p style="color: #C9933A; font-weight: bold; margin: 0;">🚚 FREE US SHIPPING on orders over $60 | US Standard $9.95 | International $60.00</p>
+                <p style="color: #C9933A; font-weight: bold; margin: 0;">🚚 FREE US SHIPPING on orders over $60 | Hook Covers always ship FREE | US Standard $9.95 | International $60.00</p>
+            </div>
+            <div style="margin-top: 14px; display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; font-size: 13px; color: #ddd;">
+                <span>🇺🇸 Designed &amp; printed in Michigan</span>
+                <span>🖨 Made to order — ships in 2-3 business days</span>
             </div>
         </div>
         <div class="container">
@@ -322,6 +326,15 @@
             <div id="featured-products" class="products-grid"></div>
             <div style="text-align: center; margin-top: 30px;">
                 <button onclick="showPage('products')">View All Products</button>
+            </div>
+            <div style="background: #061827; border-radius: 10px; padding: 30px 20px; margin-top: 40px; text-align: center;">
+                <h3 style="color: #C9933A; margin-bottom: 8px;">🎁 Get 10% Off Your First Order</h3>
+                <p style="color: #ddd; font-size: 14px; margin-bottom: 16px;">Join the ReelGearCo list — we'll email you a discount code plus first looks at new gear.</p>
+                <div style="display: flex; gap: 8px; max-width: 420px; margin: 0 auto; flex-wrap: wrap; justify-content: center;">
+                    <input type="email" id="newsletter-email" placeholder="you@email.com" style="flex: 1; min-width: 200px; padding: 12px; border-radius: 5px; border: none; font-size: 14px;">
+                    <button onclick="subscribeEmail()" style="padding: 12px 20px;">Get My Code</button>
+                </div>
+                <div id="newsletter-feedback" style="margin-top: 10px; font-size: 13px; font-weight: bold;"></div>
             </div>
         </div>
     </div>
@@ -354,6 +367,8 @@
     <div id="checkout" class="page">
         <div class="container">
             <h1>Checkout</h1>
+            <div id="payment-request-button" style="margin-bottom: 8px;"></div>
+            <div id="pr-divider" style="display: none; text-align: center; color: #888; font-size: 13px; margin: 12px 0 16px;">— or pay with card —</div>
             <form onsubmit="processPayment(event)">
                 <div class="form-group">
                     <label>Full Name:</label>
@@ -408,7 +423,25 @@
                 </div>
                 <div id="order-summary-container"></div>
                 <button type="submit" style="width: 100%; padding: 15px;">Complete Payment</button>
+                <p style="text-align: center; font-size: 12px; color: #888; margin-top: 12px;">🔒 Secure checkout powered by Stripe &nbsp;•&nbsp; Printed &amp; shipped from Michigan</p>
             </form>
+        </div>
+    </div>
+
+    <div id="info" class="page">
+        <div class="container">
+            <h1>Shipping</h1>
+            <div style="background: white; padding: 25px; border-radius: 10px; margin-bottom: 20px;">
+                <h3>📦 Shipping</h3>
+                <p style="line-height: 1.8; color: #444;">Every item is 3D printed to order and ships within 2-3 business days. US Standard shipping is $9.95, FREE on orders over $60 — and Treble Hook Cover orders always ship FREE in the US. International orders ship at a flat rate of $60.00.</p>
+            </div>
+            <div style="background: white; padding: 25px; border-radius: 10px; margin-bottom: 20px;">
+                <h3>🎣 About ReelGearCo</h3>
+                <p style="line-height: 1.8; color: #444;">ReelGearCo is run by a Michigan angler and manufacturing pro who got tired of squinting at a washed-out fish finder screen in July sun. Every sun shade, hook cover, and rod holder is designed in-house and 3D printed to order in durable PETG that stands up to heat and UV on the water. Real gear, designed by someone who actually fishes with it.</p>
+            </div>
+            <div style="text-align: center;">
+                <button onclick="showPage('products')">Shop the Gear</button>
+            </div>
         </div>
     </div>
 
@@ -442,6 +475,8 @@
     <footer>
         <p>&copy; 2025 Reel Gear Co. Premium Fishing Gear.</p>
         <p style="margin-top: 10px; font-size: 14px; color: #C9933A;">
+            <a href="#info" onclick="showPage('info')" style="color: #C9933A; text-decoration: underline;">Shipping Info</a> &nbsp;|&nbsp;
+            <a href="#info" onclick="showPage('info')" style="color: #C9933A; text-decoration: underline;">About Us</a><br><br>
             Questions? Email us at <a href="mailto:salesandsupport@reelgearco.com" style="color: #C9933A; text-decoration: underline;">salesandsupport@reelgearco.com</a>
         </p>
     </footer>
@@ -455,7 +490,7 @@
             { id: 5, name: 'Garmin Echomap 126SV', price: 29.99, desc: 'Premium shade', detail: 'Our largest sun shade, purpose-built for the Garmin Echomap 126SV premium fish finder. Keeps the big screen visible in any light condition. Durable PETG construction built to last season after season.', images: ['/126sv.jpg'] },
             { id: 6, name: 'Garmin GPSMAP 1022', price: 24.99, desc: 'Professional grade', detail: 'Heavy-duty sun shade for the Garmin GPSMAP 1022 chartplotter. Built for serious boaters who need maximum screen clarity at all times. Precision fit with no modifications required. Available in black and white.', images: ['/Garmin1022pic1.jpg', '/Garmin1022white.jpeg'] },
             { id: 7, name: 'Garmin 73SV/CV', price: 14.99, desc: 'Compact sun shade', detail: 'Compact and lightweight sun shade for the Garmin 73SV and 73CV. Perfect for kayak anglers and small boat setups where weight and size matter. Available in black, blue, and white.', images: ['/Garmin73SVblack.jpeg', '/Garmin73SVblue.jpg', '/Garmin73SVwhite.jpg'] },
-            { id: 8, name: 'Treble Hook Covers', price: 5.99, desc: 'Various Sizes Available', sizes: ['1/0', '2/0', '3/0', '4/0', '5/0'], detail: '3D printed treble hook covers to protect your hooks — and your hands — during storage and transport. Comes 16 per order. Available in sizes 1/0 through 5/0. Great for tackle boxes, bags, and lure storage.', images: ['/Blkpurplehookcover.JPG', '/Blkpurplehookcover4.JPG', '/Blkpurplehookcover3.JPG', '/Hookcoverpole.jpg', '/Hookcoverpole2.jpg'] },
+            { id: 8, name: 'Treble Hook Covers', price: 5.99, desc: 'Various Sizes Available — FREE US Shipping!', sizes: ['1/0', '2/0', '3/0', '4/0', '5/0'], detail: '3D printed treble hook covers to protect your hooks — and your hands — during storage and transport. Comes 16 per order. Available in sizes 1/0 through 5/0. Great for tackle boxes, bags, and lure storage. Hook cover orders always ship FREE in the US.', images: ['/Blkpurplehookcover.JPG', '/Blkpurplehookcover4.JPG', '/Blkpurplehookcover3.JPG', '/Hookcoverpole.jpg', '/Hookcoverpole2.jpg'] },
             { id: 9, name: 'Stake Rod Holder', price: 14.99, desc: 'Fishing Rod Stand', detail: 'Push-in stake rod holder that sticks into the ground to hold your rod completely hands-free. Great for bank fishing, shore fishing, or anywhere you need to set your rod down without losing it. Available in green, white, and as a dual pack ($24.99).', images: ['/Greenstakefront.jpg', '/Whitestake.jpg', '/Orangestackdual.jpg'] },
             { id: 10, name: 'Mountable Rod Holder', price: 11.99, desc: 'Mountable rod holder for boat or dock - 2 pack', detail: '3D printed mountable rod holder, comes as a 2 pack. Mounts to your boat gunnel, dock, kayak, or any flat surface. Lightweight but strong — holds your rod securely while you navigate or take a break. Available in gold, silver, and blue.', images: ['/Multirodholder.jpg', '/Goldrodholder.jpg', '/Silverrodholder.jpg', '/Bluerodholder.jpg'] },
             { id: 11, name: 'Garmin Echomap 162SV', price: 34.99, desc: 'XL screen shade', detail: 'Purpose-built sun shade for the Garmin Echomap 162SV large screen fish finder. Engineered for maximum glare reduction on the expansive display. Durable PETG construction that handles heat and UV exposure on the water. Available in black and white.', images: [] }
@@ -464,11 +499,14 @@
         var cart = [];
         var stripe = null;
         var cardElement = null;
+        var paymentRequest = null;
+        var prButtonMounted = false;
         var appliedPromo = null; // { code, label, discount, description }
 
         var PROMO_CODES = {
             'FRIEND20': { label: 'FRIEND20', discount: 0.20, description: '20% off — Friends & Family' },
-            'EBAY15': { label: 'EBAY15', discount: 0.15, description: '15% off — eBay Promotion' }
+            'EBAY20': { label: 'EBAY20', discount: 0.20, description: '20% off — eBay Promotion' },
+            'WELCOME10': { label: 'WELCOME10', discount: 0.10, description: '10% off — Welcome!' }
         };
 
         function r2(n) { return parseFloat(n.toFixed(2)); }
@@ -548,6 +586,7 @@
             if (page === 'cart') displayCart();
             if (page === 'checkout') initializeCheckout();
             if (page === 'community') displayComments();
+            if (page === 'info') window.scrollTo(0,0);
         }
 
         function displayFeaturedProducts() {
@@ -1000,9 +1039,10 @@
             }
             var discountedSubtotal = r2(merchSubtotal - promoDiscount);
             var isUSA = !country || country === 'US';
+            var onlyHookCovers = cart.length > 0 && cart.every(function(i) { return i.id === 8; });
             var shipping;
             if (isUSA) {
-                shipping = discountedSubtotal >= 60 ? 0 : 9.95;
+                shipping = (onlyHookCovers || discountedSubtotal >= 60) ? 0 : 9.95;
             } else {
                 shipping = 60.00;
             }
@@ -1011,7 +1051,7 @@
             var taxKnown = !isUSA || !!st; // intl = no US sales tax; US needs a state to know
             var tax = isMI ? r2((discountedSubtotal + shipping) * 0.06) : 0;
             var total = r2(discountedSubtotal + shipping + tax);
-            return { subtotal: base, totalDiscount: totalDiscount, promoDiscount: promoDiscount, discountedSubtotal: discountedSubtotal, shipping: shipping, tax: tax, total: total, isUSA: isUSA, isMI: isMI, taxKnown: taxKnown };
+            return { subtotal: base, totalDiscount: totalDiscount, promoDiscount: promoDiscount, discountedSubtotal: discountedSubtotal, shipping: shipping, tax: tax, total: total, isUSA: isUSA, isMI: isMI, taxKnown: taxKnown, onlyHookCovers: onlyHookCovers };
         }
 
         function displayCart() {
@@ -1039,7 +1079,14 @@
             }
 
             var t = cartTotals('US', null);
-            var shippingText = t.shipping === 0 ? '<span style="color:#27ae60;">FREE</span> <span style="font-size:12px; color:#27ae60;">(US order over $60)</span>' : '$' + t.shipping.toFixed(2) + ' <span style="font-size:12px; color:#888;">(US — intl $60.00)</span>';
+            var shippingText;
+            if (t.shipping === 0 && t.onlyHookCovers) {
+                shippingText = '<span style="color:#27ae60;">FREE</span> <span style="font-size:12px; color:#27ae60;">(hook covers always ship free!)</span>';
+            } else if (t.shipping === 0) {
+                shippingText = '<span style="color:#27ae60;">FREE</span> <span style="font-size:12px; color:#27ae60;">(US order over $60)</span>';
+            } else {
+                shippingText = '$' + t.shipping.toFixed(2) + ' <span style="font-size:12px; color:#888;">(US — intl $60.00)</span>';
+            }
 
             // Promo box
             html += '<div class="order-breakdown" style="margin-bottom:12px;">';
@@ -1167,6 +1214,8 @@
                 }
             }
 
+            setupPaymentRequestButton();
+
             // Restore promo UI state
             var promoInput = document.getElementById('promoCodeInput');
             var promoFeedback = document.getElementById('promo-feedback');
@@ -1195,9 +1244,19 @@
             var t = cartTotals(country, state);
             var shippingText;
             if (t.isUSA) {
-                shippingText = t.shipping === 0 ? 'FREE (US order over $60)' : '$' + t.shipping.toFixed(2) + ' (US Standard)';
+                if (t.shipping === 0 && t.onlyHookCovers) {
+                    shippingText = 'FREE (hook covers ship free!)';
+                } else {
+                    shippingText = t.shipping === 0 ? 'FREE (US order over $60)' : '$' + t.shipping.toFixed(2) + ' (US Standard)';
+                }
             } else {
                 shippingText = '$' + t.shipping.toFixed(2) + ' (International)';
+            }
+
+            if (paymentRequest) {
+                try {
+                    paymentRequest.update({ total: { label: 'ReelGearCo', amount: Math.round(t.total * 100) } });
+                } catch (e) {}
             }
 
             var taxText;
@@ -1238,6 +1297,179 @@
             summaryHtml += '</div>';
 
             document.getElementById('order-summary-container').innerHTML = summaryHtml;
+        }
+
+        // --- Apple Pay / Google Pay (Stripe Payment Request Button) ---
+        function setupPaymentRequestButton() {
+            if (!stripe || prButtonMounted || cart.length === 0) return;
+            prButtonMounted = true;
+
+            var t = cartTotals('US', null);
+            paymentRequest = stripe.paymentRequest({
+                country: 'US',
+                currency: 'usd',
+                total: { label: 'ReelGearCo', amount: Math.round(t.total * 100) },
+                requestPayerName: true,
+                requestPayerEmail: true,
+                requestShipping: true,
+                shippingOptions: [{
+                    id: 'standard',
+                    label: t.shipping === 0 ? 'FREE US Shipping' : 'US Standard',
+                    detail: 'Ships in 2-3 business days',
+                    amount: Math.round(t.shipping * 100)
+                }]
+            });
+
+            var elements = stripe.elements();
+            var prButton = elements.create('paymentRequestButton', { paymentRequest: paymentRequest });
+
+            paymentRequest.canMakePayment().then(function(result) {
+                if (result) {
+                    prButton.mount('#payment-request-button');
+                    document.getElementById('pr-divider').style.display = 'block';
+                } else {
+                    document.getElementById('payment-request-button').style.display = 'none';
+                }
+            });
+
+            paymentRequest.on('shippingaddresschange', function(ev) {
+                var country = ev.shippingAddress.country || 'US';
+                var region = ev.shippingAddress.region || '';
+                var wt = cartTotals(country === 'US' ? 'US' : country, region);
+                ev.updateWith({
+                    status: 'success',
+                    shippingOptions: [{
+                        id: 'standard',
+                        label: wt.isUSA ? (wt.shipping === 0 ? 'FREE US Shipping' : 'US Standard') : 'International Flat Rate',
+                        detail: 'Ships in 2-3 business days',
+                        amount: Math.round(wt.shipping * 100)
+                    }],
+                    total: { label: 'ReelGearCo', amount: Math.round(wt.total * 100) }
+                });
+            });
+
+            paymentRequest.on('paymentmethod', function(ev) {
+                var addr = ev.shippingAddress || {};
+                var country = addr.country || 'US';
+                var state = addr.region || '';
+                var wt = cartTotals(country === 'US' ? 'US' : country, state);
+                var orderTotal = wt.total;
+
+                sendOrderEmailQuick('pending', ev.payerName, ev.payerEmail, addr, orderTotal, wt.subtotal);
+
+                fetch('/api/create-payment-intent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        items: cart.map(function(i) { return { id: i.id, name: i.name, qty: i.qty || 1 }; }),
+                        promoCode: appliedPromo ? appliedPromo.code : null,
+                        country: country,
+                        state: state,
+                        email: ev.payerEmail,
+                        metadata: { name: ev.payerName }
+                    })
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    if (data.error) {
+                        ev.complete('fail');
+                        alert('Error: ' + data.error);
+                        return;
+                    }
+                    if (typeof data.total === 'number') orderTotal = data.total;
+                    stripe.confirmCardPayment(data.clientSecret, { payment_method: ev.paymentMethod.id }, { handleActions: false })
+                    .then(function(result) {
+                        if (result.error) {
+                            ev.complete('fail');
+                            sendOrderEmailQuick('failed', ev.payerName, ev.payerEmail, addr, orderTotal, wt.subtotal);
+                            alert('Payment failed: ' + result.error.message);
+                            return;
+                        }
+                        ev.complete('success');
+                        if (result.paymentIntent.status === 'requires_action') {
+                            stripe.confirmCardPayment(data.clientSecret).then(function(r) {
+                                if (r.error) {
+                                    sendOrderEmailQuick('failed', ev.payerName, ev.payerEmail, addr, orderTotal, wt.subtotal);
+                                    alert('Payment failed: ' + r.error.message);
+                                } else {
+                                    walletSuccess(ev, addr, orderTotal, wt.subtotal);
+                                }
+                            });
+                        } else {
+                            walletSuccess(ev, addr, orderTotal, wt.subtotal);
+                        }
+                    });
+                })
+                .catch(function(err) {
+                    ev.complete('fail');
+                    alert('Payment error: ' + err);
+                });
+            });
+        }
+
+        function walletSuccess(ev, addr, total, subtotal) {
+            sendOrderEmailQuick('success', ev.payerName, ev.payerEmail, addr, total, subtotal);
+            alert('Payment successful! Thank you for your purchase!');
+            cart = [];
+            appliedPromo = null;
+            saveCart();
+            updateCartCount();
+            showPage('home');
+        }
+
+        function sendOrderEmailQuick(status, name, email, addr, total, subtotal) {
+            var line1 = (addr.addressLine && addr.addressLine.length) ? addr.addressLine.join(', ') : (addr.line1 || '');
+            fetch('/api/send-order-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    status: status,
+                    customerName: name || '',
+                    customerEmail: email || '',
+                    address: line1,
+                    city: addr.city || '',
+                    state: addr.region || '',
+                    zipcode: addr.postalCode || '',
+                    country: addr.country || 'US',
+                    items: cart,
+                    total: total,
+                    cartTotal: subtotal
+                })
+            }).catch(function(err) { console.log('Email send error:', err); });
+        }
+
+        // --- Newsletter signup ---
+        function subscribeEmail() {
+            var input = document.getElementById('newsletter-email');
+            var feedback = document.getElementById('newsletter-feedback');
+            var email = input.value.trim();
+            if (!email || email.indexOf('@') < 1 || email.indexOf('.') < 0) {
+                feedback.style.color = '#e74c3c';
+                feedback.textContent = 'Please enter a valid email address.';
+                return;
+            }
+            feedback.style.color = '#ddd';
+            feedback.textContent = 'Sending...';
+            fetch('/api/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email })
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.error) {
+                    feedback.style.color = '#e74c3c';
+                    feedback.textContent = data.error;
+                } else {
+                    feedback.style.color = '#27ae60';
+                    feedback.textContent = '🎉 Check your inbox — your 10% code is on the way!';
+                    input.value = '';
+                }
+            })
+            .catch(function() {
+                feedback.style.color = '#e74c3c';
+                feedback.textContent = 'Something went wrong. Please try again.';
+            });
         }
 
         function processPayment(event) {
