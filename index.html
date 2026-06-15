@@ -1032,12 +1032,18 @@
             }
             base = r2(base);
             totalDiscount = r2(totalDiscount);
-            var merchSubtotal = r2(base - totalDiscount);
+            // Promo codes and the multi-unit discount do NOT stack — it's one or the other.
+            // When a promo is applied, the multi-unit discount is suppressed and the promo
+            // applies to the full subtotal (always the better deal for the customer).
             var promoDiscount = 0;
+            var discountedSubtotal;
             if (appliedPromo) {
-                promoDiscount = r2(merchSubtotal * appliedPromo.discount);
+                totalDiscount = 0;
+                promoDiscount = r2(base * appliedPromo.discount);
+                discountedSubtotal = r2(base - promoDiscount);
+            } else {
+                discountedSubtotal = r2(base - totalDiscount);
             }
-            var discountedSubtotal = r2(merchSubtotal - promoDiscount);
             var isUSA = !country || country === 'US';
             var onlyHookCovers = cart.length > 0 && cart.every(function(i) { return i.id === 8; });
             var shipping;
@@ -1066,7 +1072,7 @@
                 var item = cart[i];
                 var qty = item.qty || 1;
                 var lineBase = r2(item.price * qty);
-                var lineSaved = lineSavings(item.price, qty);
+                var lineSaved = appliedPromo ? 0 : lineSavings(item.price, qty);
                 var lineTotal = r2(lineBase - lineSaved);
                 var discLabel = lineSaved > 0 ? ' <span style="color:#27ae60; font-size:12px; font-weight:bold;">(extra units 10% off)</span>' : '';
                 html += '<div class="comment-box" style="border-left-color:#C9933A;">';
@@ -1275,7 +1281,7 @@
             for (var i = 0; i < cart.length; i++) {
                 var item = cart[i];
                 var qty = item.qty || 1;
-                var lineSaved = lineSavings(item.price, qty);
+                var lineSaved = appliedPromo ? 0 : lineSavings(item.price, qty);
                 var lineTotal = r2(item.price * qty - lineSaved);
                 var discTag = lineSaved > 0 ? ' <span style="color:#27ae60; font-size:11px;">(extra units 10% off)</span>' : '';
                 summaryHtml += '<div class="breakdown-row"><span>' + item.name + ' × ' + qty + discTag + '</span><span>$' + lineTotal.toFixed(2) + '</span></div>';
