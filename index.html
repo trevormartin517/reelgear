@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReelGearCo - 3D Printed Garmin Fish Finder Sun Shades & Fishing Gear</title>
-    <meta name="description" content="Custom 3D printed Garmin fish finder sun shades for Striker 4, Echomap 93SV, 106SV, 126SV, GPSMAP 1022 and more. Also treble hook covers and rod holders. Free US shipping over $60.">
+    <meta name="description" content="Custom 3D printed Garmin fish finder sun shades for Striker 4, Echomap 93SV, 106SV, 126SV, GPSMAP 1022 and more. Also treble hook covers and rod holders. Free US shipping over $65.">
     <meta property="og:title" content="ReelGearCo - All Your 3D Printed Fishing Needs!">
     <meta property="og:description" content="Premium 3D printed fishing gear. Garmin fish finder sun shades, treble hook covers, rod holders and more.">
     <meta property="og:image" content="https://www.reelgearco.com/og-thumbnail.png">
@@ -314,7 +314,7 @@
             <h1>REEL GEAR</h1>
             <p>Premium 3D Printed Fishing Gear - Garmin Sun Shades</p>
             <div style="margin-top: 20px; padding: 10px 20px; background: rgba(201, 147, 58, 0.2); border-radius: 5px; border: 2px solid #C9933A;">
-                <p style="color: #C9933A; font-weight: bold; margin: 0;">🚚 FREE US SHIPPING on orders over $60 | Hook Covers always ship FREE | US Standard $9.95 | International $60.00</p>
+                <p style="color: #C9933A; font-weight: bold; margin: 0;">🚚 FREE US SHIPPING on orders over $65 | Hook Covers always ship FREE | US Standard $9.95 | International $60.00</p>
             </div>
             <div style="margin-top: 14px; display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; font-size: 13px; color: #ddd;">
                 <span>🇺🇸 Designed &amp; printed in Michigan</span>
@@ -433,7 +433,7 @@
             <h1>Shipping</h1>
             <div style="background: white; padding: 25px; border-radius: 10px; margin-bottom: 20px;">
                 <h3>📦 Shipping</h3>
-                <p style="line-height: 1.8; color: #444;">Every item is 3D printed to order and ships within 2-3 business days. US Standard shipping is $9.95, FREE on orders over $60 — and Treble Hook Cover orders always ship FREE in the US. International orders ship at a flat rate of $60.00.</p>
+                <p style="line-height: 1.8; color: #444;">Every item is 3D printed to order and ships within 2-3 business days. US Standard shipping is $9.95, FREE on orders over $65 (promo-code orders excluded) — and Treble Hook Cover orders always ship FREE in the US. International orders ship at a flat rate of $60.00.</p>
             </div>
             <div style="background: white; padding: 25px; border-radius: 10px; margin-bottom: 20px;">
                 <h3>🎣 About ReelGearCo</h3>
@@ -1048,7 +1048,9 @@
             var onlyHookCovers = cart.length > 0 && cart.every(function(i) { return i.id === 8; });
             var shipping;
             if (isUSA) {
-                shipping = (onlyHookCovers || discountedSubtotal >= 60) ? 0 : 9.95;
+                // Free shipping over $65 applies ONLY when no promo code is used.
+                var promoUsed = !!appliedPromo;
+                shipping = onlyHookCovers ? 0 : ((!promoUsed && discountedSubtotal >= 65) ? 0 : 9.95);
             } else {
                 shipping = 60.00;
             }
@@ -1089,7 +1091,7 @@
             if (t.shipping === 0 && t.onlyHookCovers) {
                 shippingText = '<span style="color:#27ae60;">FREE</span> <span style="font-size:12px; color:#27ae60;">(hook covers always ship free!)</span>';
             } else if (t.shipping === 0) {
-                shippingText = '<span style="color:#27ae60;">FREE</span> <span style="font-size:12px; color:#27ae60;">(US order over $60)</span>';
+                shippingText = '<span style="color:#27ae60;">FREE</span> <span style="font-size:12px; color:#27ae60;">(US order over $65)</span>';
             } else {
                 shippingText = '$' + t.shipping.toFixed(2) + ' <span style="font-size:12px; color:#888;">(US — intl $60.00)</span>';
             }
@@ -1129,8 +1131,12 @@
                 html += '<div style="margin-top:10px; padding:8px; background:#eafaf1; border-radius:5px; text-align:center; font-size:13px; color:#27ae60; font-weight:bold;">🎉 You\'re saving $' + totalSaved.toFixed(2) + ' on this order!</div>';
             }
             if (t.shipping > 0) {
-                var needed = r2(60 - t.discountedSubtotal);
-                if (needed > 0) html += '<div style="margin-top:8px; text-align:center; font-size:12px; color:#C9933A;">Add $' + needed.toFixed(2) + ' more for FREE US shipping!</div>';
+                if (appliedPromo) {
+                    html += '<div style="margin-top:8px; text-align:center; font-size:12px; color:#C9933A;">Free shipping isn\'t available with a promo code.</div>';
+                } else {
+                    var needed = r2(65 - t.discountedSubtotal);
+                    if (needed > 0) html += '<div style="margin-top:8px; text-align:center; font-size:12px; color:#C9933A;">Add $' + needed.toFixed(2) + ' more for FREE US shipping!</div>';
+                }
                 html += '<div style="margin-top:4px; text-align:center; font-size:11px; color:#999;">International orders ship for $60.00 flat</div>';
             }
             html += '</div>';
@@ -1253,7 +1259,7 @@
                 if (t.shipping === 0 && t.onlyHookCovers) {
                     shippingText = 'FREE (hook covers ship free!)';
                 } else {
-                    shippingText = t.shipping === 0 ? 'FREE (US order over $60)' : '$' + t.shipping.toFixed(2) + ' (US Standard)';
+                    shippingText = t.shipping === 0 ? 'FREE (US order over $65)' : '$' + t.shipping.toFixed(2) + ' (US Standard)';
                 }
             } else {
                 shippingText = '$' + t.shipping.toFixed(2) + ' (International)';
@@ -1372,6 +1378,9 @@
                         country: country,
                         state: state,
                         email: ev.payerEmail,
+                        address: (addr.addressLine && addr.addressLine.length) ? addr.addressLine.join(', ') : (addr.line1 || ''),
+                        city: addr.city || '',
+                        zipcode: addr.postalCode || '',
                         metadata: { name: ev.payerName }
                     })
                 })
@@ -1414,7 +1423,7 @@
         }
 
         function walletSuccess(ev, addr, total, subtotal) {
-            sendOrderEmailQuick('success', ev.payerName, ev.payerEmail, addr, total, subtotal);
+            // Confirmed emails are now sent server-side by /api/stripe-webhook.js.
             alert('Payment successful! Thank you for your purchase!');
             cart = [];
             appliedPromo = null;
@@ -1437,6 +1446,7 @@
                     state: addr.region || '',
                     zipcode: addr.postalCode || '',
                     country: addr.country || 'US',
+                    promoCode: appliedPromo ? appliedPromo.code : null,
                     items: cart,
                     total: total,
                     cartTotal: subtotal
@@ -1522,6 +1532,7 @@
                     state: state,
                     zipcode: zipcode,
                     country: country,
+                    promoCode: appliedPromo ? appliedPromo.code : null,
                     items: cart,
                     total: total,
                     cartTotal: subtotal
@@ -1539,6 +1550,9 @@
                     country: country,
                     state: state,
                     email: email,
+                    address: address,
+                    city: city,
+                    zipcode: zipcode,
                     metadata: { name: name }
                 })
             })
@@ -1558,23 +1572,10 @@
             .then(function(result) {
                 if (!result) return;
                 if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
-                    fetch('/api/send-order-email', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            status: 'success',
-                            customerName: name,
-                            customerEmail: email,
-                            address: address,
-                            city: city,
-                            state: state,
-                            zipcode: zipcode,
-                            country: country,
-                            items: cart,
-                            total: total,
-                            cartTotal: subtotal
-                        })
-                    }).catch(function(err) { console.log('Success email error:', err); });
+                    // Confirmed "SHIP THIS ORDER" + customer confirmation emails are now
+                    // sent server-side by /api/stripe-webhook.js, so they can't be missed
+                    // if the browser closes or redirects. (Do not re-add a success email
+                    // here or you'll get duplicates.)
                     alert('Payment successful! Thank you for your purchase!');
                     cart = [];
                     appliedPromo = null;
