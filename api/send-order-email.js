@@ -11,15 +11,24 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { status, customerName, customerEmail, address, city, state, zipcode, items, total, cartTotal } = req.body;
+    const {
+      status, customerName, customerEmail, address, city, state, zipcode,
+      items, total, cartTotal,
+      promoCode // optional — shows on the email when index.html passes it
+    } = req.body;
 
     if (!customerName || !customerEmail || !address || !city || !state || !zipcode) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const itemsList = items.map(item => 
+    const itemsList = items.map(item =>
       `${item.name} - $${item.price.toFixed(2)} ${item.qty ? `(Qty: ${item.qty})` : ''}`
     ).join('\n');
+
+    // Renders a "Promo Code: XXXX" line only when a code was actually used.
+    const promoLine = promoCode && String(promoCode).trim()
+      ? `Promo Code: ${String(promoCode).trim().toUpperCase()}\n`
+      : '';
 
     if (status === 'pending') {
       const merchantEmailBody = `
@@ -36,7 +45,7 @@ ${city}, ${state} ${zipcode}
 Items Ordered:
 ${itemsList}
 
-Subtotal: $${cartTotal.toFixed(2)}
+${promoLine}Subtotal: $${cartTotal.toFixed(2)}
 Total: $${total.toFixed(2)}
 
 ---
@@ -54,6 +63,10 @@ Order submission at: ${new Date().toLocaleString()}
       return res.status(200).json({ success: true, message: 'Order email sent' });
 
     } else if (status === 'success') {
+      // NOTE: Once /api/stripe-webhook.js is live, the webhook sends the
+      // confirmed "SHIP THIS ORDER" + customer emails reliably. Remove the
+      // browser call that posts status:'success' here so you don't get
+      // duplicate confirmation emails. This branch is kept only as a fallback.
       const merchantEmailBody = `
 NEW ORDER RECEIVED!
 
@@ -68,14 +81,13 @@ ${city}, ${state} ${zipcode}
 Items Ordered:
 ${itemsList}
 
-Subtotal: $${cartTotal.toFixed(2)}
+${promoLine}Subtotal: $${cartTotal.toFixed(2)}
 Total: $${total.toFixed(2)}
 
 ---
 Order received at: ${new Date().toLocaleString()}
       `;
 
-      // Send to both salesandsupport and fulfillment
       await resend.emails.send({
         from: 'Reel Gear Co <salesandsupport@reelgearco.com>',
         to: [primaryEmail, fulfillmentEmail],
@@ -83,7 +95,6 @@ Order received at: ${new Date().toLocaleString()}
         text: merchantEmailBody,
       });
 
-      // Send confirmation to customer
       const customerEmailBody = `
 Thank you for your order, ${customerName}!
 
@@ -94,7 +105,7 @@ ${city}, ${state} ${zipcode}
 Order Summary:
 ${itemsList}
 
-Total: $${total.toFixed(2)}
+${promoLine}Total: $${total.toFixed(2)}
 
 We'll send you a shipping notification soon!
 
@@ -124,7 +135,7 @@ Amount Attempted: $${total.toFixed(2)}
 Items:
 ${itemsList}
 
-Time: ${new Date().toLocaleString()}
+${promoLine}Time: ${new Date().toLocaleString()}
 
 Please follow up with customer if needed.
       `;

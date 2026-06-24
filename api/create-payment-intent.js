@@ -43,7 +43,12 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { items, promoCode, country, state, email, metadata } = req.body || {};
+    const {
+      items, promoCode, country, state, email, metadata,
+      // shipping address — passed through so the webhook can print it on the
+      // "SHIP THIS ORDER" email. Safe to omit; they just won't appear in metadata.
+      address, city, zipcode
+    } = req.body || {};
 
     if (!Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: 'Your cart is empty.' });
@@ -54,7 +59,7 @@ module.exports = async (req, res) => {
 
     // --- Recompute totals server-side (mirrors index.html cartTotals) ---
     let base = 0;
-    let multiDiscount = 0;
+    let multiDiscountRaw = 0;
     for (const item of items) {
       const price = unitPrice(item);
       if (!price) {
@@ -63,26 +68,36 @@ module.exports = async (req, res) => {
       const qty = Math.max(1, Math.min(10, parseInt(item.qty, 10) || 1));
       base += r2(price * qty);
       // Multi-unit discount: first unit full price, each ADDITIONAL unit 10% off
-      multiDiscount += r2(price * 0.10 * (qty - 1));
+      multiDiscountRaw += r2(price * 0.10 * (qty - 1));
     }
     base = r2(base);
-    multiDiscount = r2(multiDiscount);
+    multiDiscountRaw = r2(multiDiscountRaw);
 
-    const merchSubtotal = r2(base - multiDiscount);
-
-    let promoDiscount = 0;
+    // --- ONE discount at a time ---
+    // A valid promo code wins and the multi-unit discount does NOT stack on top.
+    // (This matches what the browser/checkout already shows, so the charge,
+    //  the on-screen total, and the email all agree.)
     const code = String(promoCode || '').trim().toUpperCase();
-    if (code && PROMO_CODES[code]) {
-      promoDiscount = r2(merchSubtotal * PROMO_CODES[code]);
+    const promoRate = (code && PROMO_CODES[code]) ? PROMO_CODES[code] : 0;
+
+    let multiDiscount = 0;
+    let promoDiscount = 0;
+    if (promoRate > 0) {
+      promoDiscount = r2(base * promoRate);
+    } else {
+      multiDiscount = multiDiscountRaw;
     }
 
-    const discountedSubtotal = r2(merchSubtotal - promoDiscount);
+    const discountedSubtotal = r2(base - multiDiscount - promoDiscount);
 
     const isUSA = !country || country === 'US';
     // Treble Hook Cover-only orders always ship free in the US
     const onlyHookCovers = items.every((i) => Number(i.id) === 8);
+    const promoUsed = promoRate > 0;
+    // Free shipping over $65 applies ONLY when no promo code is used.
+    // A promo code and free shipping do not stack.
     const shipping = isUSA
-      ? (onlyHookCovers || discountedSubtotal >= 60 ? 0 : 9.95)
+      ? (onlyHookCovers ? 0 : ((!promoUsed && discountedSubtotal >= 65) ? 0 : 9.95))
       : 60.0;
 
     // 6% Michigan sales tax — collected only on US orders shipping to Michigan
@@ -104,9 +119,13 @@ module.exports = async (req, res) => {
       receipt_email: email || undefined,
       metadata: {
         name: (metadata && metadata.name) || '',
+        email: email || '',
         promoCode: code || '',
         country: country || 'US',
         state: st,
+        address: String(address || '').slice(0, 200),
+        city: String(city || '').slice(0, 100),
+        zipcode: String(zipcode || '').slice(0, 20),
         itemsSummary: items
           .map((i) => `${i.qty || 1}x ${String(i.name || i.id).slice(0, 40)}`)
           .join('; ')
