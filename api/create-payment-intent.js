@@ -22,7 +22,8 @@ const PRICES = {
 
 const PROMO_CODES = {
   FRIEND20: 0.20,
-  EBAY20: 0.2,
+  EBAY15: 0.15,
+  EBAY20: 0.15,
   WELCOME10: 0.10
 };
 
